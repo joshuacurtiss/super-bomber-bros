@@ -28,6 +28,9 @@ export default function () {
         ' ': [sprite('space'), scale(2)],
         'X': [sprite('block'), scale(2), solid()],
         '#': [sprite('brick'), scale(2), solid()],
+        any(ch) {
+            return null
+        },
     }
     addLevel(map, mapConfig)
     const player = add([
