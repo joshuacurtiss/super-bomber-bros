@@ -6,10 +6,14 @@
   "author": "Josh Curtiss <josh@curtiss.me>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel src/index.html -p 8000"
+    "serve": "live-server --port=8000 --no-browser dist",
+    "start": "parcel src/index.html -p 8000",
+    "build": "parcel build --public-url '.' src/index.html --out-dir dist",
+    "watch": "parcel watch src/index.html --out-dir dist"
   },
   "dependencies": {
-    "kaboom": "^0.5.1"
+    "kaboom": "^0.5.1",
+    "live-server": "^1.2.1"
   },
   "devDependencies": {
     "parcel-bundler": "1.12.3",
