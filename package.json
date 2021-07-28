@@ -1,0 +1,20 @@
+{
+  "name": "super-bomber-bros",
+  "version": "0.0.1",
+  "description": "Super Bomber Bros",
+  "main": "index.js",
+  "author": "Josh Curtiss <josh@curtiss.me>",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel src/index.html -p 8000"
+  },
+  "dependencies": {
+    "kaboom": "^0.5.1"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.2"
+  },
+  "alias": {
+    "kaboom": "./node_modules/kaboom/dist/kaboom.mjs"
+  }
+}
