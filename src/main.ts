@@ -5,7 +5,7 @@ const {
     loadSprite, scene, start,
 } = k
 
-loadSprite('bomberman', '../assets/bomberman.png')
+loadSprite('bomberman', 'assets/bomberman.png')
 
 scene('start', startScene)
 scene('lose', loseScene)
