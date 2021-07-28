@@ -5,7 +5,7 @@ export default function () {
         add, color, go, keyPress, origin, pos, text, width, height
     } = k
     add([
-        text("Hello world!", 16),
+        text("Super Bomber Bros", 16),
         color(1, 1, 1, 1),
         origin('center'),
         pos(width()*0.5, height()*0.4 )
