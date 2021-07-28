@@ -16,6 +16,7 @@ loadSprite('bomberman', 'assets/characters/bomberman.png')
 loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png')
 loadSprite('brick-explode', 'assets/map/brick-explode.png')
+loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})
 loadSprite('space', 'assets/map/space.png')
 
 // Scenes

@@ -1,9 +1,10 @@
 import k from '../kaboom'
 
 export default function () {
+    const GRID_SIZE = 32
     const WALK_SPEED = 120
     const {
-        add, addLevel, keyDown, layer, layers, pos, scale, sprite, height, width, go, solid,
+        add, addLevel, keyDown, keyPress, layer, layers, pos, scale, sprite, height, width, go, solid,
     } = k
     layers(['bg', 'obj', 'ui'], 'obj')
     const map = [
@@ -22,8 +23,8 @@ export default function () {
         'XXXXXXXXXXXXXXX',
     ]
     const mapConfig = {
-        width: 32,
-        height: 32,
+        width: GRID_SIZE,
+        height: GRID_SIZE,
         scale: 2,
         ' ': [sprite('space'), scale(2)],
         'X': [sprite('block'), scale(2), solid()],
@@ -35,7 +36,7 @@ export default function () {
     addLevel(map, mapConfig)
     const player = add([
 		sprite('bomberman'),
-        pos(32, 30),
+        pos(GRID_SIZE, GRID_SIZE),
         scale(0.92),
 	])
     player.action(() => {
@@ -49,6 +50,20 @@ export default function () {
 			go("lose");
 		}
 	});
+    keyPress('space', ()=>{
+        // TODO: Logic for snapping to grid is not right, but I gotta go
+        let {x, y} = player.pos
+        let modX = x % GRID_SIZE
+        let modY = y % GRID_SIZE
+        x = Math.floor(x + (modX<=GRID_SIZE/2 ? -modX : modX))
+        y = Math.floor(y + (modY<=GRID_SIZE/2 ? -modY : modY))
+        const bomb = add([
+            sprite('bomb'),
+            scale(2),
+            pos(x, y)
+        ])
+        bomb.play('bomb')
+    })
     keyDown('left', ()=>{
         player.move(-WALK_SPEED, 0)
     })
