@@ -9,6 +9,7 @@
     "serve": "live-server --port=8000 --no-browser dist",
     "start": "parcel src/index.html -p 8000",
     "build": "parcel build --public-url '.' src/index.html --out-dir dist",
+    "build:docker": "docker build . -t joshuacurtiss/super-bomber-bros",
     "watch": "parcel watch src/index.html --out-dir dist"
   },
   "dependencies": {
