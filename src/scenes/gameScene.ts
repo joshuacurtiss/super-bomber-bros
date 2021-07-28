@@ -3,13 +3,40 @@ import k from '../kaboom'
 export default function () {
     const WALK_SPEED = 120
     const {
-        add, keyDown, pos, sprite, height, width, go,
+        add, addLevel, keyDown, layer, layers, pos, scale, sprite, height, width, go, solid,
     } = k
+    layers(['bg', 'obj', 'ui'], 'obj')
+    const map = [
+        'XXXXXXXXXXXXXXX',
+        'X   ## ####   X',
+        'X X#XXX#X#XXX X',
+        'X ### ##X#### X',
+        'X#XXX#X XXX#X#X',
+        'X#X#### ##X###X',
+        'X#X#X#X X#X#X#X',
+        'X###X## ####X#X',
+        'X#X#XXX X#XXX#X',
+        'X  ## X### ## X',
+        'X XXX#X#XXX#X X',
+        'X   #### ##   X',
+        'XXXXXXXXXXXXXXX',
+    ]
+    const mapConfig = {
+        width: 32,
+        height: 32,
+        scale: 2,
+        ' ': [sprite('space'), scale(2)],
+        'X': [sprite('block'), scale(2), solid()],
+        '#': [sprite('brick'), scale(2), solid()],
+    }
+    addLevel(map, mapConfig)
     const player = add([
 		sprite('bomberman'),
-		pos(80, 80),
+        pos(32, 30),
+        scale(0.92),
 	])
     player.action(() => {
+        player.resolve()
 		if (
             player.pos.y >= height() - player.height ||
             player.pos.y <= 0 ||
