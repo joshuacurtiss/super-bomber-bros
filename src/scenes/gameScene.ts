@@ -42,6 +42,13 @@ const map = [
     '###############',
 ]
 
+/**
+ * Timer function for bombs. Handles the countdown and initiating the explosion afterward.
+ * On `update`, it counts the timer down, and when timer is below zero, it runs `explode`.
+ * For now, `explode` just creates a small explosion and animates it, then destroys it after
+ * it is done (0.7 sec). TODO: add intelligence to detect what stuff is getting destroyed
+ * and other bombs that will extend the blast.
+ */
 function bombTimer() {
     let timer = 3
     return {
@@ -102,6 +109,11 @@ function bombTimer() {
     }
 }
 
+/**
+ * Spawns a new bomb at the received position. It snaps the position to the grid so the bomb fits cleanly on the grid.
+ * If a bomb already exists at the location, it will not spawn another one.
+ * @param spawnPosition Approximate position to spawn the bomb. "Approximate" because the position will snap to the grid.
+ */
 function spawnBomb(spawnPosition:Vec2) {
     let {x, y} = spawnPosition
     // Snap the bomb to the grid size
