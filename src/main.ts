@@ -17,6 +17,15 @@ loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png')
 loadSprite('brick-explode', 'assets/map/brick-explode.png')
 loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})
+loadSprite('explosion', 'assets/map/explosion.png', {
+    gridWidth: 48,
+    gridHeight: 48,
+    anims: {
+        'explode-origin': {from:0, to: 6},
+        'explode-middle': {from:7, to: 13},
+        'explode-end': {from:14, to: 20},
+    },
+})
 loadSprite('space', 'assets/map/space.png')
 
 // Scenes
