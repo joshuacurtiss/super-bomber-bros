@@ -144,21 +144,21 @@ export default function () {
         layer('bg'),
     ])
     const player = add([
-		sprite('bomberman'),
+        sprite('bomberman'),
         pos(GRID_SIZE, GRID_SIZE),
         scale(0.92),
-	])
+    ])
     player.action(() => {
         player.resolve()
-		if (
+        if (
             player.pos.y >= height() - player.height ||
             player.pos.y <= 0 ||
             player.pos.x >= width() - player.width ||
             player.pos.x <= 0
         ) {
-			go("lose");
-		}
-	});
+            go("lose");
+        }
+    });
     keyPress('space', ()=>spawnBomb(player.pos))
     keyDown('left', ()=>player.move(-WALK_SPEED, 0))
     keyDown('right', ()=>player.move(WALK_SPEED, 0))

@@ -5,17 +5,17 @@ export default function () {
         add, color, go, keyPress, origin, pos, scale, sprite, text, width, height
     } = k
     add([
-		sprite('title-bomberman'),
-		pos(width()*0.43, height()*0.3),
+        sprite('title-bomberman'),
+        pos(width()*0.43, height()*0.3),
         scale(1.5),
         origin('center')
-	])
+    ])
     add([
-		sprite('title-mario'),
-		pos(width()*0.57, height()*0.3),
+        sprite('title-mario'),
+        pos(width()*0.57, height()*0.3),
         scale(2.3),
         origin('center')
-	])
+    ])
     add([
         text("Super Bomber Bros", 20),
         color(1, 1, 1, 1),
