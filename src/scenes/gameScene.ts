@@ -7,6 +7,8 @@ const {
     add, 
     addLevel, 
     debug,
+    destroy,
+    dt,
     get,
     go, 
     height, 
@@ -37,6 +39,19 @@ const map = [
     'XXXXXXXXXXXXXXX',
 ]
 
+function bombTimer() {
+    let timer = 3
+    return {
+        update() {
+            timer-=dt()
+            if( timer<0 ) this.explode()
+        },
+        explode() {
+            destroy(this)
+        }
+    }
+}
+
 function spawnBomb(spawnPosition:Vec2) {
     let {x, y} = spawnPosition
     // Snap the bomb to the grid size
@@ -55,6 +70,7 @@ function spawnBomb(spawnPosition:Vec2) {
             scale(2),
             layer('bomb'),
             pos(bombPosition),
+            bombTimer(),
             'bomb'
         ])
         bomb.play('bomb')
