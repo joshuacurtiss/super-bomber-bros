@@ -51,28 +51,28 @@ function bombTimer() {
         },
         explode() {
             const EXP_SCALE = 0.66666667
-            const explosionPosition = {x: this.pos.x + GRID_SIZE/2, y: this.pos.y + GRID_SIZE/2} as Vec2
-            const explosionOrigin = add([
+            const expPos = {x: this.pos.x + GRID_SIZE/2, y: this.pos.y + GRID_SIZE/2} as Vec2
+            const expOrigin = add([
                 sprite('explosion'),
                 scale(EXP_SCALE),
                 layer('bomb'),
                 origin('center'),
-                pos(explosionPosition),
+                pos(expPos),
             ])
-            const explosionEnds = [
+            const expEnds = [
                 add([
                     sprite('explosion'),
                     origin('center'),
                     scale(EXP_SCALE),
                     layer('bomb'),
-                    pos(explosionPosition.x + GRID_SIZE, explosionPosition.y),
+                    pos(expPos.x + GRID_SIZE, expPos.y),
                 ]),
                 add([
                     sprite('explosion'),
                     origin('center'),
                     scale(-EXP_SCALE, EXP_SCALE),
                     layer('bomb'),
-                    pos(explosionPosition.x - GRID_SIZE, explosionPosition.y),
+                    pos(expPos.x - GRID_SIZE, expPos.y),
                 ]),
                 add([
                     sprite('explosion'),
@@ -80,7 +80,7 @@ function bombTimer() {
                     scale(EXP_SCALE, -EXP_SCALE),
                     rotate(33),
                     layer('bomb'),
-                    pos(explosionPosition.x, explosionPosition.y + GRID_SIZE),
+                    pos(expPos.x, expPos.y + GRID_SIZE),
                 ]),
                 add([
                     sprite('explosion'),
@@ -88,15 +88,15 @@ function bombTimer() {
                     scale(EXP_SCALE),
                     rotate(33),
                     layer('bomb'),
-                    pos(explosionPosition.x, explosionPosition.y - GRID_SIZE),
+                    pos(expPos.x, expPos.y - GRID_SIZE),
                 ]), 
             ]
             destroy(this)
-            explosionOrigin.play('explode-origin')
-            explosionEnds.forEach(exp=>exp.play('explode-end'))
+            expOrigin.play('explode-origin')
+            expEnds.forEach(exp=>exp.play('explode-end'))
             wait(0.7, ()=>{
-                destroy(explosionOrigin)
-                explosionEnds.forEach(exp=>destroy(exp))
+                destroy(expOrigin)
+                expEnds.forEach(exp=>destroy(exp))
             })
         }
     }
