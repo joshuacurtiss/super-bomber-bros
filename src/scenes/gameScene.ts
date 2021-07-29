@@ -27,19 +27,19 @@ const {
 } = k
 
 const map = [
-    'XXXXXXXXXXXXXXX',
-    'X   ## ####   X',
-    'X X#XXX#X#XXX X',
-    'X ### ##X#### X',
-    'X#XXX#X XXX#X#X',
-    'X#X#### ##X###X',
-    'X#X#X#X X#X#X#X',
-    'X###X## ####X#X',
-    'X#X#XXX X#XXX#X',
-    'X  ## X### ## X',
-    'X XXX#X#XXX#X X',
-    'X   #### ##   X',
-    'XXXXXXXXXXXXXXX',
+    '###############',
+    '#   OO OOOO   #',
+    '# #O###O#O### #',
+    '# OOO OO#OOOO #',
+    '#O###O# ###O#O#',
+    '#O#OOOO OO#OOO#',
+    '#O#O#O# #O#O#O#',
+    '#OOO#OO OOOO#O#',
+    '#O#O### #O###O#',
+    '# OOO #OOO OO #',
+    '# ###O#O###O# #',
+    '#   OOOO OO   #',
+    '###############',
 ]
 
 function bombTimer() {
@@ -133,8 +133,8 @@ export default function () {
         width: GRID_SIZE,
         height: GRID_SIZE,
         scale: 2,
-        'X': [sprite('block'), scale(2), solid()],
-        '#': [sprite('brick'), scale(2), solid()],
+        '#': [sprite('block'), scale(2), solid()],
+        'O': [sprite('brick'), scale(2), solid()],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
