@@ -22,7 +22,7 @@ loadSprite('explosion', 'assets/map/explosion.png', {
     gridHeight: 48,
     anims: {
         'explode-origin': {from:0, to: 6},
-        'explode-middle': {from:7, to: 13},
+        'explode-mid': {from:7, to: 13},
         'explode-end': {from:14, to: 20},
     },
 })

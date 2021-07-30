@@ -27,6 +27,7 @@ function bomb() {
     let quantity = 1
     let bombCnt = 0
     return {
+        getRadius: ()=>radius,
         canSpawnBomb: ()=>bombCnt<quantity,
         decBombCnt: ()=>--bombCnt,
         incBombCnt: ()=>++bombCnt,
@@ -66,49 +67,53 @@ function bomb() {
                 layer('bomb'),
                 'explosion',
             ])
-            const expEnds = [
-                add([
+            const expMids = []
+            const expEnds = []
+            const {x, y} = expPos
+            for( let i=1 ; i<=player.getRadius() ; i++ ) {
+                const targ = i===player.getRadius() ? expEnds : expMids
+                targ.push(add([
                     sprite('explosion'),
                     origin('center'),
-                    scale(EXP_SCALE),
-                    pos(expPos.x + GRID_PIXEL_SIZE, expPos.y),
-                    layer('bomb'),
+                    layer('bomb'), 
+                    scale(EXP_SCALE), 
+                    pos(x + GRID_PIXEL_SIZE*i, y), 
                     'explosion',
-                ]),
-                add([
+                ]))
+                targ.push(add([
                     sprite('explosion'),
                     origin('center'),
-                    scale(-EXP_SCALE, EXP_SCALE),
-                    pos(expPos.x - GRID_PIXEL_SIZE, expPos.y),
-                    layer('bomb'),
+                    layer('bomb'), 
+                    scale(-EXP_SCALE, EXP_SCALE), 
+                    pos(x - GRID_PIXEL_SIZE*i, y), 
                     'explosion',
-                ]),
-                add([
+                ]))
+                targ.push(add([
                     sprite('explosion'),
                     origin('center'),
-                    scale(EXP_SCALE, -EXP_SCALE),
-                    rotate(33),
-                    pos(expPos.x, expPos.y + GRID_PIXEL_SIZE),
-                    layer('bomb'),
+                    layer('bomb'), 
+                    scale(EXP_SCALE, -EXP_SCALE), 
+                    rotate(33), 
+                    pos(x, y + GRID_PIXEL_SIZE*i), 
                     'explosion',
-                ]),
-                add([
+                ]))
+                targ.push(add([
                     sprite('explosion'),
                     origin('center'),
-                    scale(EXP_SCALE),
-                    rotate(33),
-                    pos(expPos.x, expPos.y - GRID_PIXEL_SIZE),
-                    layer('bomb'),
+                    layer('bomb'), 
+                    scale(EXP_SCALE), 
+                    rotate(33), 
+                    pos(x, y - GRID_PIXEL_SIZE*i), 
                     'explosion',
-                ]), 
-            ]
+                ]))
+            }
             player.decBombCnt()
             destroy(this)
             expOrigin.play('explode-origin')
+            expMids.forEach(exp=>exp.play('explode-mid'))
             expEnds.forEach(exp=>exp.play('explode-end'))
             wait(0.7, ()=>{
-                destroy(expOrigin)
-                expEnds.forEach(exp=>destroy(exp))
+                [expOrigin, ...expMids, ...expEnds].forEach(exp=>destroy(exp))
             })
         }
     }
