@@ -82,12 +82,11 @@ function bomb() {
                 }
                 const bricks=getAtPos(itemPos, 'brick')
                 if( bricks.length ) {
-                    console.log("Hit a brick!")
+                    bricks.forEach(brick=>brick.explode())
                     return true
                 }
                 const bombs=getAtPos(itemPos, 'bomb')
                 if( bombs.length ) {
-                    console.log("Hit a bomb!");
                     bombs.forEach(bomb=>bomb.explode())
                     return true
                 }

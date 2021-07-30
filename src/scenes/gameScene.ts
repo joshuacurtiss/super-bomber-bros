@@ -1,5 +1,6 @@
 import k from '../kaboom'
 import bomb from '../model/Bomb'
+import brick from '../model/Brick'
 import {GRID_PIXEL_SIZE} from '../types'
 
 const WALK_SPEED = 120
@@ -45,7 +46,7 @@ export default function () {
         height: GRID_PIXEL_SIZE,
         scale: 2,
         '#': [sprite('block'), scale(2), solid(), 'block'],
-        'O': [sprite('brick'), scale(2), solid(), 'brick'],
+        'O': [sprite('brick'), scale(2), solid(), brick(), 'brick'],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
