@@ -1,0 +1,139 @@
+import k from '../kaboom'
+import {GRID_PIXEL_SIZE, POWERUPS} from '../types'
+import {Vec2} from 'kaboom'
+
+const {
+    add,
+    destroy,
+    dt,
+    get,
+    layer,
+    origin,
+    pos,
+    rotate,
+    scale,
+    sprite,
+    wait,
+} = k
+
+/**
+ * Function for attaching bomb ability to a player. Tracks their current bomb deploying abilities, 
+ * like: Blast radius, bomb quantity, and other special abilities
+ */
+function bomb() {
+    const MAX_RADIUS = 9
+    const MAX_QUANTITY = 9
+    let radius = 1
+    let quantity = 1
+    return {
+        spawnBomb,
+        powerup(name: POWERUPS) {
+            if( name===POWERUPS.RADIUS_INC ) radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
+            else if( name===POWERUPS.RADIUS_DEC ) radius = radius>1 ? radius-1 : 1
+            else if( name===POWERUPS.RADIUS_MAX ) radius = MAX_RADIUS
+            else if( name===POWERUPS.QUANTITY_INC ) quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
+            else if( name===POWERUPS.QUANTITY_DEC ) quantity = quantity>1 ? quantity-1 : 1
+            else if( name===POWERUPS.QUANTITY_MAX ) quantity = MAX_QUANTITY
+        }
+    }
+}
+
+/**
+ * Timer function for bombs. Handles the countdown and initiating the explosion afterward.
+ * On `update`, it counts the timer down, and when timer is below zero, it runs `explode`
+ * then destroys it after it is done (0.7 sec).
+ */
+ function bombTimer() {
+    let timer = 3
+    return {
+        update() {
+            timer-=dt()
+            if( timer<0 ) this.explode()
+        },
+        explode() {
+            const EXP_SCALE = 0.66666667
+            const expPos = {x: this.pos.x + GRID_PIXEL_SIZE/2, y: this.pos.y + GRID_PIXEL_SIZE/2} as Vec2
+            const expOrigin = add([
+                sprite('explosion'),
+                scale(EXP_SCALE),
+                origin('center'),
+                pos(expPos),
+                layer('bomb'),
+                'explosion',
+            ])
+            const expEnds = [
+                add([
+                    sprite('explosion'),
+                    origin('center'),
+                    scale(EXP_SCALE),
+                    pos(expPos.x + GRID_PIXEL_SIZE, expPos.y),
+                    layer('bomb'),
+                    'explosion',
+                ]),
+                add([
+                    sprite('explosion'),
+                    origin('center'),
+                    scale(-EXP_SCALE, EXP_SCALE),
+                    pos(expPos.x - GRID_PIXEL_SIZE, expPos.y),
+                    layer('bomb'),
+                    'explosion',
+                ]),
+                add([
+                    sprite('explosion'),
+                    origin('center'),
+                    scale(EXP_SCALE, -EXP_SCALE),
+                    rotate(33),
+                    pos(expPos.x, expPos.y + GRID_PIXEL_SIZE),
+                    layer('bomb'),
+                    'explosion',
+                ]),
+                add([
+                    sprite('explosion'),
+                    origin('center'),
+                    scale(EXP_SCALE),
+                    rotate(33),
+                    pos(expPos.x, expPos.y - GRID_PIXEL_SIZE),
+                    layer('bomb'),
+                    'explosion',
+                ]), 
+            ]
+            destroy(this)
+            expOrigin.play('explode-origin')
+            expEnds.forEach(exp=>exp.play('explode-end'))
+            wait(0.7, ()=>{
+                destroy(expOrigin)
+                expEnds.forEach(exp=>destroy(exp))
+            })
+        }
+    }
+}
+
+/**
+ * Spawns a new bomb at the player's position. It snaps the position to the grid so the bomb fits cleanly on the grid.
+ * If a bomb already exists at the location, it will not spawn another one.
+ */
+function spawnBomb() {
+    let {x, y} = this.pos as Vec2
+    // Snap the bomb to the grid size
+    let modX = x % GRID_PIXEL_SIZE
+    let modY = y % GRID_PIXEL_SIZE
+    const bombPosition = {
+        x: Math.round(x - modX + (modX<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE)),
+        y: Math.round(y - modY + (modY<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE)),
+    } as Vec2
+    // Check if a bomb is already here, and only spawn if it is clear
+    const bombs = get('bomb')
+    if( bombs.length===0 || bombs.filter(bomb=>bomb.pos.eq(bombPosition)).length===0 ) {
+        const bomb = add([
+            sprite('bomb'),
+            scale(2),
+            layer('bomb'),
+            pos(bombPosition),
+            bombTimer(),
+            'bomb'
+        ])
+        bomb.play('bomb')
+    }
+}
+
+export default bomb
