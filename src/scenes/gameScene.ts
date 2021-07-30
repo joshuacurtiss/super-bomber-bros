@@ -6,6 +6,7 @@ const WALK_SPEED = 120
 const {
     add, 
     addLevel, 
+    collides,
     destroy,
     go, 
     height, 
@@ -13,7 +14,6 @@ const {
     keyPress, 
     layer,
     layers, 
-    overlaps,
     pos, 
     scale, 
     solid,
@@ -44,7 +44,7 @@ export default function () {
         width: GRID_PIXEL_SIZE,
         height: GRID_PIXEL_SIZE,
         scale: 2,
-        '#': [sprite('block'), scale(2), solid()],
+        '#': [sprite('block'), scale(2), solid(), 'block'],
         'O': [sprite('brick'), scale(2), solid(), 'brick'],
         any: (ch) => null,
     }
@@ -72,7 +72,7 @@ export default function () {
             go("lose")
         }
     })
-    overlaps('explosion', 'player', (exp, player)=>{
+    collides('explosion', 'player', (exp, player)=>{
         destroy(player)
         wait(1, ()=>{
             go('lose')
