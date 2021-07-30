@@ -25,7 +25,11 @@ function bomb() {
     const MAX_QUANTITY = 9
     let radius = 1
     let quantity = 1
+    let bombCnt = 0
     return {
+        canSpawnBomb: ()=>bombCnt<quantity,
+        decBombCnt: ()=>--bombCnt,
+        incBombCnt: ()=>++bombCnt,
         spawnBomb,
         powerup(name: POWERUPS) {
             if( name===POWERUPS.RADIUS_INC ) radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
@@ -42,8 +46,9 @@ function bomb() {
  * Timer function for bombs. Handles the countdown and initiating the explosion afterward.
  * On `update`, it counts the timer down, and when timer is below zero, it runs `explode`
  * then destroys it after it is done (0.7 sec).
+ * @param player The player who owns the bomb, so their bomb count can be decremented.
  */
- function bombTimer() {
+ function bombTimer(player) {
     let timer = 3
     return {
         update() {
@@ -97,6 +102,7 @@ function bomb() {
                     'explosion',
                 ]), 
             ]
+            player.decBombCnt()
             destroy(this)
             expOrigin.play('explode-origin')
             expEnds.forEach(exp=>exp.play('explode-end'))
@@ -113,8 +119,10 @@ function bomb() {
  * If a bomb already exists at the location, it will not spawn another one.
  */
 function spawnBomb() {
-    let {x, y} = this.pos as Vec2
+    // Do not spawn if you have no more left
+    if( ! this.canSpawnBomb() ) return
     // Snap the bomb to the grid size
+    let {x, y} = this.pos as Vec2
     let modX = x % GRID_PIXEL_SIZE
     let modY = y % GRID_PIXEL_SIZE
     const bombPosition = {
@@ -129,10 +137,11 @@ function spawnBomb() {
             scale(2),
             layer('bomb'),
             pos(bombPosition),
-            bombTimer(),
+            bombTimer(this),
             'bomb'
         ])
         bomb.play('bomb')
+        this.incBombCnt()
     }
 }
 
