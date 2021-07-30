@@ -1,4 +1,5 @@
 import k from '../kaboom'
+import {getAtPos} from '../util'
 import {GRID_PIXEL_SIZE, POWERUPS} from '../types'
 import {Vec2} from 'kaboom'
 
@@ -57,58 +58,100 @@ function bomb() {
             if( timer<0 ) this.explode()
         },
         explode() {
-            const EXP_SCALE = 0.66666667
+            destroy(this)
+            const EXP_SCALE = 0.666666667
             const expPos = {x: this.pos.x + GRID_PIXEL_SIZE/2, y: this.pos.y + GRID_PIXEL_SIZE/2} as Vec2
             const expOrigin = add([
                 sprite('explosion'),
                 scale(EXP_SCALE),
                 origin('center'),
                 pos(expPos),
-                layer('bomb'),
                 'explosion',
             ])
             const expMids = []
             const expEnds = []
             const {x, y} = expPos
-            for( let i=1 ; i<=player.getRadius() ; i++ ) {
-                const targ = i===player.getRadius() ? expEnds : expMids
-                targ.push(add([
-                    sprite('explosion'),
-                    origin('center'),
-                    layer('bomb'), 
-                    scale(EXP_SCALE), 
-                    pos(x + GRID_PIXEL_SIZE*i, y), 
-                    'explosion',
-                ]))
-                targ.push(add([
-                    sprite('explosion'),
-                    origin('center'),
-                    layer('bomb'), 
-                    scale(-EXP_SCALE, EXP_SCALE), 
-                    pos(x - GRID_PIXEL_SIZE*i, y), 
-                    'explosion',
-                ]))
-                targ.push(add([
-                    sprite('explosion'),
-                    origin('center'),
-                    layer('bomb'), 
-                    scale(EXP_SCALE, -EXP_SCALE), 
-                    rotate(33), 
-                    pos(x, y + GRID_PIXEL_SIZE*i), 
-                    'explosion',
-                ]))
-                targ.push(add([
-                    sprite('explosion'),
-                    origin('center'),
-                    layer('bomb'), 
-                    scale(EXP_SCALE), 
-                    rotate(33), 
-                    pos(x, y - GRID_PIXEL_SIZE*i), 
-                    'explosion',
-                ]))
+            const radius = player.getRadius()
+            const detectItems = (itemPos): boolean => {
+                if( getAtPos(itemPos, 'block').length ) return true
+                const explosions = getAtPos(itemPos, 'explosion')
+                // TODO: Don't go over same spot where explosion already is, but this detection isn't working right.
+                if( explosions.length ) {
+                    console.log("Hit explosion!", explosions.map(e=>e.pos))
+                    // return true
+                }
+                const bricks=getAtPos(itemPos, 'brick')
+                if( bricks.length ) {
+                    console.log("Hit a brick!")
+                    return true
+                }
+                const bombs=getAtPos(itemPos, 'bomb')
+                if( bombs.length ) {
+                    console.log("Hit a bomb!");
+                    bombs.forEach(bomb=>bomb.explode())
+                    return true
+                }
+                return false
+            };
+            // Right
+            for( let i=1, hit=false ; i<=radius && !hit ; i++ ) {
+                const newPos = {x: x + GRID_PIXEL_SIZE*i,  y} as Vec2
+                hit = detectItems(newPos)
+                if( ! hit ) {
+                    (i===radius ? expEnds : expMids).push(add([
+                        sprite('explosion'),
+                        origin('center'), 
+                        scale(EXP_SCALE), 
+                        pos(newPos), 
+                        'explosion',
+                    ]))
+                }
+            }
+            // Left
+            for( let i=1, hit=false ; i<=radius && !hit ; i++ ) {
+                const newPos = {x: x - GRID_PIXEL_SIZE*i,  y} as Vec2
+                hit = detectItems(newPos)
+                if( ! hit ) {
+                    (i===radius ? expEnds : expMids).push(add([
+                        sprite('explosion'),
+                        origin('center'), 
+                        scale(-EXP_SCALE, EXP_SCALE), 
+                        pos(newPos), 
+                        'explosion',
+                    ]))
+                }
+            }
+            // Down
+            for( let i=1, hit=false ; i<=radius && !hit ; i++ ) {
+                const newPos = {x,  y: y + GRID_PIXEL_SIZE*i} as Vec2
+                hit = detectItems(newPos)
+                if( ! hit ) {
+                    (i===radius ? expEnds : expMids).push(add([
+                        sprite('explosion'),
+                        origin('center'), 
+                        scale(EXP_SCALE, -EXP_SCALE), 
+                        rotate(33), 
+                        pos(x, y + GRID_PIXEL_SIZE*i), 
+                        'explosion',
+                    ]))
+                }
+            }
+            // Up
+            for( let i=1, hit=false ; i<=radius && !hit ; i++ ) {
+                const newPos = {x,  y: y - GRID_PIXEL_SIZE*i} as Vec2
+                hit = detectItems(newPos)
+                if( ! hit ) {
+                    (i===radius ? expEnds : expMids).push(add([
+                        sprite('explosion'),
+                        origin('center'), 
+                        scale(EXP_SCALE), 
+                        rotate(33), 
+                        pos(x, y - GRID_PIXEL_SIZE*i), 
+                        'explosion',
+                    ]))
+                }
             }
             player.decBombCnt()
-            destroy(this)
             expOrigin.play('explode-origin')
             expMids.forEach(exp=>exp.play('explode-mid'))
             expEnds.forEach(exp=>exp.play('explode-end'))
