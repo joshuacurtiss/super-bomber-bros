@@ -21,7 +21,7 @@ const {
  * Function for attaching bomb ability to a player. Tracks their current bomb deploying abilities, 
  * like: Blast radius, bomb quantity, and other special abilities
  */
-function bomb() {
+function canBomb() {
     const MAX_RADIUS = 9
     const MAX_QUANTITY = 9
     let radius = 1
@@ -192,4 +192,4 @@ function spawnBomb() {
     }
 }
 
-export default bomb
+export default canBomb

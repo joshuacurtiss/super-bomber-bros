@@ -1,8 +1,8 @@
 import k from '../kaboom'
-import bomb from '../model/Bomb'
+import canBomb from '../abilities/canBomb'
+import canWalk from '../abilities/canWalk'
 import brick from '../model/Brick'
 import timer from '../model/Timer'
-import canWalk from '../abilities/canWalk'
 import {GRID_PIXEL_SIZE} from '../types'
 
 const DEFAULT_GAME_TIME = 180
@@ -73,7 +73,7 @@ export default function () {
         pos(GRID_PIXEL_SIZE, GRID_PIXEL_SIZE),
         scale(0.92),
         area(vec2(9,5), vec2(25,32)),
-        bomb(),
+        canBomb(),
         canWalk(),
         'player',
     ])
