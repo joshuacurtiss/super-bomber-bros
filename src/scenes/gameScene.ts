@@ -7,6 +7,7 @@ const WALK_SPEED = 120
 const {
     add, 
     addLevel, 
+    area,
     collides,
     destroy,
     go, 
@@ -18,7 +19,8 @@ const {
     pos, 
     scale, 
     solid,
-    sprite, 
+    sprite,
+    vec2, 
     wait,
     width, 
 } = k
@@ -59,6 +61,7 @@ export default function () {
         sprite('bomberman'),
         pos(GRID_PIXEL_SIZE, GRID_PIXEL_SIZE),
         scale(0.92),
+        area(vec2(9,5), vec2(25,32)),
         bomb(),
         'player',
     ])
