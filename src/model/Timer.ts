@@ -28,9 +28,8 @@ function timer(maxTime: number) {
         }
     }
     return {
-        isStarted: ()=>start>0,
         start() {
-            start=time()
+            if( !start ) start=time()
         },
         update() {
             if( start ) {

@@ -2,9 +2,9 @@ import k from '../kaboom'
 import bomb from '../model/Bomb'
 import brick from '../model/Brick'
 import timer from '../model/Timer'
+import canWalk from '../abilities/canWalk'
 import {GRID_PIXEL_SIZE} from '../types'
 
-const WALK_SPEED = 120
 const DEFAULT_GAME_TIME = 180
 
 const {
@@ -12,9 +12,9 @@ const {
     addLevel, 
     area,
     collides,
+    debug,
     destroy,
     go, 
-    height, 
     keyDown, 
     keyPress, 
     layer,
@@ -26,7 +26,6 @@ const {
     text,
     vec2, 
     wait,
-    width, 
 } = k
 
 const map = [
@@ -75,18 +74,11 @@ export default function () {
         scale(0.92),
         area(vec2(9,5), vec2(25,32)),
         bomb(),
+        canWalk(),
         'player',
     ])
     player.action(() => {
         player.resolve()
-        if (
-            player.pos.y >= height() - player.height ||
-            player.pos.y <= 0 ||
-            player.pos.x >= width() - player.width ||
-            player.pos.x <= 0
-        ) {
-            go("lose")
-        }
     })
     collides('explosion', 'player', (exp, player)=>{
         destroy(player)
@@ -95,23 +87,23 @@ export default function () {
         })
     })
     keyPress('space', ()=>{
-        if( !timerLabel.isStarted() ) timerLabel.start()
+        timerLabel.start()
         player.spawnBomb()
     })
     keyDown('left', ()=>{
-        if( !timerLabel.isStarted() ) timerLabel.start()
-        player.move(-WALK_SPEED, 0)
+        timerLabel.start()
+        player.walk(-1, 0)
     })
     keyDown('right', ()=>{
-        if( !timerLabel.isStarted() ) timerLabel.start()
-        player.move(WALK_SPEED, 0)
+        timerLabel.start()
+        player.walk(1, 0)
     })
     keyDown('up', ()=>{
-        if( !timerLabel.isStarted() ) timerLabel.start()
-        player.move(0, -WALK_SPEED)
+        timerLabel.start()
+        player.walk(0, -1)
     })
     keyDown('down', ()=>{
-        if( !timerLabel.isStarted() ) timerLabel.start()
-        player.move(0, WALK_SPEED)
+        timerLabel.start()
+        player.walk(0, 1)
     })
 }
