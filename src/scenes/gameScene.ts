@@ -1,9 +1,12 @@
 import k from '../kaboom'
 import bomb from '../model/Bomb'
 import brick from '../model/Brick'
+import timer from '../model/Timer'
 import {GRID_PIXEL_SIZE} from '../types'
 
 const WALK_SPEED = 120
+const DEFAULT_GAME_TIME = 180
+
 const {
     add, 
     addLevel, 
@@ -20,6 +23,7 @@ const {
     scale, 
     solid,
     sprite,
+    text,
     vec2, 
     wait,
     width, 
@@ -52,6 +56,14 @@ export default function () {
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
+    const timerLabel = add([
+        text("", 18),
+        pos(15, 6),
+        timer(DEFAULT_GAME_TIME),
+    ]);
+    timerLabel.on('timer_end', ()=>{
+        go('lose')
+    })
     add([
         sprite('space'),
         scale(15*2, 13*2),
@@ -82,9 +94,24 @@ export default function () {
             go('lose')
         })
     })
-    keyPress('space', ()=>player.spawnBomb())
-    keyDown('left', ()=>player.move(-WALK_SPEED, 0))
-    keyDown('right', ()=>player.move(WALK_SPEED, 0))
-    keyDown('up', ()=>player.move(0, -WALK_SPEED))
-    keyDown('down', ()=>player.move(0, WALK_SPEED))
+    keyPress('space', ()=>{
+        if( !timerLabel.isStarted() ) timerLabel.start()
+        player.spawnBomb()
+    })
+    keyDown('left', ()=>{
+        if( !timerLabel.isStarted() ) timerLabel.start()
+        player.move(-WALK_SPEED, 0)
+    })
+    keyDown('right', ()=>{
+        if( !timerLabel.isStarted() ) timerLabel.start()
+        player.move(WALK_SPEED, 0)
+    })
+    keyDown('up', ()=>{
+        if( !timerLabel.isStarted() ) timerLabel.start()
+        player.move(0, -WALK_SPEED)
+    })
+    keyDown('down', ()=>{
+        if( !timerLabel.isStarted() ) timerLabel.start()
+        player.move(0, WALK_SPEED)
+    })
 }
