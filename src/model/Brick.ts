@@ -9,20 +9,17 @@ const {
     wait,
 } = k
 
-function brick() {
+export default function() {
     return {
         explode() {
             destroy(this)
             const explodingBrick = add([
-                sprite('brick-explode'),
+                sprite('brick'),
                 scale(2),
                 pos(this.pos),
-                'brick',
             ])
             explodingBrick.play('explode')
             wait(0.5, ()=>destroy(explodingBrick))
         }
     }
 }
-
-export default brick
