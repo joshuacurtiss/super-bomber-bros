@@ -4,16 +4,18 @@ import {GRID_PIXEL_SIZE, POWERUPS} from '../types'
 import {Vec2} from 'kaboom'
 
 const {
+    action,
     add,
+    area,
     destroy,
     dt,
     get,
-    layer,
     origin,
     pos,
     rotate,
     scale,
     sprite,
+    vec2,
     wait,
 } = k
 
@@ -27,6 +29,7 @@ function canBomb() {
     let radius = 1
     let quantity = 1
     let bombCnt = 0
+    action("bomb", b => b.check())
     return {
         getRadius: ()=>radius,
         canSpawnBomb: ()=>bombCnt<quantity,
@@ -56,6 +59,12 @@ function canBomb() {
         update() {
             timer-=dt()
             if( timer<0 ) this.explode()
+        },
+        check() {
+            if( this.solid ) return
+            const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
+            const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
+            this.solid = playerCenter.dist(bombCenter) > 30
         },
         explode() {
             destroy(this)
@@ -169,6 +178,7 @@ function spawnBomb() {
     // Do not spawn if you have no more left
     if( ! this.canSpawnBomb() ) return
     // Snap the bomb to the grid size
+    // TODO: This can be done better
     let {x, y} = this.pos as Vec2
     let modX = x % GRID_PIXEL_SIZE
     let modY = y % GRID_PIXEL_SIZE
@@ -182,10 +192,10 @@ function spawnBomb() {
         const bomb = add([
             sprite('bomb'),
             scale(2),
-            layer('bomb'),
+            area(vec2(2,4), vec2(14,16)),
             pos(bombPosition),
             bombTimer(this),
-            'bomb'
+            'bomb',
         ])
         bomb.play('bomb')
         this.incBombCnt()
