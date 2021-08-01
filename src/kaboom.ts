@@ -5,7 +5,7 @@ export const k = kaboom({
     fullscreen: true,
     width: 320,
     height: 240,
-    scale: 1.75,
+    scale: 1.5,
     debug: true,
 })
 
