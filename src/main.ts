@@ -26,7 +26,6 @@ loadSprite('explosion', 'assets/map/explosion.png', {
         'explode-end': {from:14, to: 20},
     },
 })
-loadSprite('space', 'assets/map/space.png')
 
 // Scenes
 scene('start', startScene)
