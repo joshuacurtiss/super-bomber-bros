@@ -1,3 +1,4 @@
+import { Vec2 } from 'kaboom'
 import k from '../kaboom'
 
 const {
@@ -14,9 +15,9 @@ function canWalk(speed: number = 120) {
         stop() {
             walking=false
         },
-        walk(x: number, y: number) {
+        walk(direction: Vec2) {
             walking=true
-            dir=vec2(x, y)
+            dir=direction
             this.move(dir.scale(speed))
         },
     }

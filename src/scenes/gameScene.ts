@@ -19,6 +19,7 @@ const {
     go, 
     keyDown, 
     keyPress, 
+    keyRelease,
     layer,
     layers, 
     pos, 
@@ -61,7 +62,7 @@ const GREEN = color(0.223, 0.517, 0)
 export default function () {
     
     // Layers
-    layers(['bg', 'bomb', 'obj', 'ui'], 'obj')
+    layers(['bg', 'obj', 'ui'], 'obj')
     
     // Level/Map
     const mapConfig = {
@@ -121,18 +122,22 @@ export default function () {
     })
     keyDown('left', ()=>{
         timerLabel.start()
-        player.walk(-1, 0)
+        player.walk(vec2(-1, 0))
     })
     keyDown('right', ()=>{
         timerLabel.start()
-        player.walk(1, 0)
+        player.walk(vec2(1, 0))
     })
     keyDown('up', ()=>{
         timerLabel.start()
-        player.walk(0, -1)
+        player.walk(vec2(0, -1))
     })
     keyDown('down', ()=>{
         timerLabel.start()
-        player.walk(0, 1)
+        player.walk(vec2(0, 1))
     })
+    keyRelease('left', player.stop)
+    keyRelease('right', player.stop)
+    keyRelease('up', player.stop)
+    keyRelease('down', player.stop)
 }
