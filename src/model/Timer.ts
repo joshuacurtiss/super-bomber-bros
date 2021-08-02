@@ -3,6 +3,7 @@ import k from '../kaboom'
 import { POWERUPS } from '../types'
 
 const {
+    debug,
     time,
 } = k
 
@@ -30,11 +31,15 @@ function timer(maxTime: number) {
     }
     return {
         start() {
-            if( !start ) start=time()
+            if( !start ) {
+                start=time()
+                debug.clearLog()
+            }
         },
         powerup(index: number) {
             if( index===POWERUPS.TIME ) {
                 maxTime+=30
+                debug.log('Sweet, you just increased game time by 30 sec!')
             }
         },
         update() {

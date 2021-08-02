@@ -7,6 +7,7 @@ const {
     action,
     add,
     area,
+    debug,
     destroy,
     dt,
     get,
@@ -42,10 +43,19 @@ function canBomb() {
         canPBomb: ()=>pbomb,
         spawnBomb,
         bombPowerup(index: number) {
-            if( index===POWERUPS.RADIUS ) radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
-            else if( index===POWERUPS.QUANTITY ) quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
-            else if( index===POWERUPS.KICK ) bombKick=true
-            else if( index===POWERUPS.P_BOMB ) pbomb=true
+            if( index===POWERUPS.RADIUS ) {
+                radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
+                debug.log(`Sweet, your bomb radius is now ${radius}!`)
+            } else if( index===POWERUPS.QUANTITY ) {
+                quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
+                debug.log(`Sweet, you can now drop ${quantity} bombs!`)
+            } else if( index===POWERUPS.KICK ) {
+                bombKick=true
+                debug.log(`Kickin' the can!`)
+            } else if( index===POWERUPS.P_BOMB ) {
+                pbomb=true
+                debug.log(`Sweet, let it all out!`)
+            }
         }
     }
 }
