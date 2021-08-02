@@ -1,5 +1,6 @@
 import { GameObj } from 'kaboom'
 import k from '../kaboom'
+import { POWERUPS } from '../types'
 
 const {
     time,
@@ -30,6 +31,11 @@ function timer(maxTime: number) {
     return {
         start() {
             if( !start ) start=time()
+        },
+        powerup(index: number) {
+            if( index===POWERUPS.TIME ) {
+                maxTime+=30
+            }
         },
         update() {
             if( start ) {

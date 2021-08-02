@@ -25,6 +25,7 @@ loadSprite('explosion', 'assets/map/explosion.png', {
         'explode-end': {from:14, to: 20},
     },
 })
+loadSprite('powerups', 'assets/map/powerups.png', {gridWidth: 16, gridHeight: 16})
 
 // Scenes
 scene('start', startScene)

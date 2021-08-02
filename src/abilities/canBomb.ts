@@ -29,20 +29,23 @@ function canBomb() {
     let radius = 1
     let quantity = 1
     let bombCnt = 0
+    let bombKick = false
+    let pbomb = false
     action("bomb", b => b.check())
     return {
+        setRadius: newradius=>radius=newradius,
         getRadius: ()=>radius,
         canSpawnBomb: ()=>bombCnt<quantity,
         decBombCnt: ()=>--bombCnt,
         incBombCnt: ()=>++bombCnt,
+        canBombKick: ()=>bombKick,
+        canPBomb: ()=>pbomb,
         spawnBomb,
-        powerup(name: POWERUPS) {
-            if( name===POWERUPS.RADIUS_INC ) radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
-            else if( name===POWERUPS.RADIUS_DEC ) radius = radius>1 ? radius-1 : 1
-            else if( name===POWERUPS.RADIUS_MAX ) radius = MAX_RADIUS
-            else if( name===POWERUPS.QUANTITY_INC ) quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
-            else if( name===POWERUPS.QUANTITY_DEC ) quantity = quantity>1 ? quantity-1 : 1
-            else if( name===POWERUPS.QUANTITY_MAX ) quantity = MAX_QUANTITY
+        bombPowerup(index: number) {
+            if( index===POWERUPS.RADIUS ) radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
+            else if( index===POWERUPS.QUANTITY ) quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
+            else if( index===POWERUPS.KICK ) bombKick=true
+            else if( index===POWERUPS.P_BOMB ) pbomb=true
         }
     }
 }
@@ -92,6 +95,11 @@ function canBomb() {
                 const bricks=getAtPos(itemPos, 'brick')
                 if( bricks.length ) {
                     bricks.forEach(brick=>brick.explode())
+                    return true
+                }
+                const powerups=getAtPos(itemPos, 'powerup')
+                if( powerups.length ) {
+                    powerups.forEach(item=>destroy(item))
                     return true
                 }
                 const bombs=getAtPos(itemPos, 'bomb')

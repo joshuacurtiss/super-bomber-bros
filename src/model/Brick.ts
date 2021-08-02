@@ -1,15 +1,25 @@
 import k from '../kaboom'
+import {POWERUPS} from '../types'
 
 const {
     add,
     destroy,
     pos,
+    rand,
+    randSeed,
     scale,
     sprite,
     wait,
 } = k
 
+function randomPowerup():number {
+    const validIndices = Object.values(POWERUPS)
+    const index = Math.floor(rand(0, 14))
+    return validIndices.includes(index) ? index : -1
+}
+
 export default function() {
+    randSeed(Date.now());
     return {
         explode() {
             destroy(this)
@@ -19,7 +29,18 @@ export default function() {
                 pos(this.pos),
             ])
             explodingBrick.play('explode')
-            wait(0.5, ()=>destroy(explodingBrick))
+            wait(0.5, ()=>{
+                const frame = randomPowerup()
+                if( frame>=0 ) {
+                    add([
+                        sprite('powerups', {frame}),
+                        scale(2),
+                        pos(explodingBrick.pos),
+                        'powerup',
+                    ])
+                }
+                destroy(explodingBrick)
+            })
         }
     }
 }

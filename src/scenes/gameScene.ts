@@ -12,7 +12,6 @@ const {
     add, 
     addLevel, 
     area,
-    collides,
     color,
     debug,
     destroy,
@@ -22,6 +21,7 @@ const {
     keyRelease,
     layer,
     layers, 
+    overlaps,
     pos, 
     rect,
     scale, 
@@ -108,11 +108,16 @@ export default function () {
     player.action(() => {
         player.resolve()
     })
-    collides('explosion', 'player', (exp, player)=>{
+    overlaps('explosion', 'player', (exp, player)=>{
         destroy(player)
         wait(1, ()=>{
             go('lose')
         })
+    })
+    overlaps('powerup', 'player', (powerup, player)=>{
+        player.bombPowerup(powerup.frame)
+        timerLabel.powerup(powerup.frame)
+        destroy(powerup)
     })
 
     // Controls
