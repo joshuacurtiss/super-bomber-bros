@@ -101,7 +101,25 @@ export default function () {
     timerLabel.on('timer_warning', ()=>{
         debug.log("Time's running out!")
         play('hurryup')
-        const times=[5, 15, 30, 40, 45, 50, 55]
+        // Falling blocks shrink the board
+        /*
+        let t=1
+        let y=2
+        for( let x=1 ; x<14 ; x+=1 ) {
+            wait(t+=0.5, ()=>{
+                const targ=vec2(x, y).scale(GRID_PIXEL_SIZE)
+                // Not solid
+                add([
+                    sprite('block'),
+                    scale(2),
+                    'block',
+                    pos(targ),
+                ])
+            })
+        }
+        */
+        // Randomized timeslots for hazard
+        const times=[rand(3,8), rand(12,19), rand(25,35), rand(38,42), rand( 43,48), rand(49,51), rand(52,56)]
         times.forEach(t=>{
             wait(t, ()=>{
                 play('bullet')
