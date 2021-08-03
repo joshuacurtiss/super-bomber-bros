@@ -96,12 +96,6 @@ function canBomb() {
             const radius = player.getRadius()
             const detectItems = (itemPos): boolean => {
                 if( getAtPos(itemPos, 'block').length ) return true
-                const explosions = getAtPos(itemPos, 'explosion')
-                // TODO: Don't go over same spot where explosion already is, but this detection isn't working right.
-                if( explosions.length ) {
-                    console.log("Hit explosion!", explosions.map(e=>e.pos))
-                    // return true
-                }
                 const bricks=getAtPos(itemPos, 'brick')
                 if( bricks.length ) {
                     bricks.forEach(brick=>brick.explode())
@@ -196,8 +190,9 @@ function spawnBomb() {
     // Do not spawn if you have no more left
     if( ! this.canSpawnBomb() ) return
     // Snap the bomb to the grid size
-    // TODO: This can be done better
-    let {x, y} = this.pos as Vec2
+    // We use player's area instead of sprite position to be a little more accurate to what the player expects. 
+    // Also, we add a couple pixels vertically so the placement favors the feet over the head.
+    let {x, y} = this.pos.add(this.area.p1).add(vec2(0, 2))
     let modX = x % GRID_PIXEL_SIZE
     let modY = y % GRID_PIXEL_SIZE
     const bombPosition = {
