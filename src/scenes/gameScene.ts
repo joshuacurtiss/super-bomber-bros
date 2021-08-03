@@ -22,7 +22,9 @@ const {
     layer,
     layers, 
     overlaps,
+    play,
     pos, 
+    rand,
     rect,
     scale, 
     solid,
@@ -30,6 +32,7 @@ const {
     text,
     vec2, 
     wait,
+    width,
 } = k
 
 const map = [
@@ -95,6 +98,28 @@ export default function () {
         pos(12, 9),
         timer(DEFAULT_GAME_TIME),
     ]);
+    timerLabel.on('timer_warning', ()=>{
+        debug.log("Time's running out!")
+        play('hurryup')
+        const times=[5, 15, 30, 40, 45, 50, 55]
+        times.forEach(t=>{
+            wait(t, ()=>{
+                play('bullet')
+                const dir = rand()>0.5 ? 1 : -1
+                const bullet = add([
+                    sprite('bullet'),
+                    scale(dir, 1),
+                    pos(dir===1 ? -GRID_PIXEL_SIZE*3 : width()+GRID_PIXEL_SIZE, Math.floor(rand(0, mapHeightPixels-GRID_PIXEL_SIZE))),
+                    'enemy',
+                ])
+                bullet.action(()=>{
+                    bullet.move(125 * bullet.scale.x,0)
+                    if( bullet.scale.x>0 && bullet.pos.x > width() ) destroy(bullet)
+                    if( bullet.scale.x<0 && bullet.pos.x < -bullet.width ) destroy(bullet)
+                })
+            })
+        })
+    })
     timerLabel.on('timer_end', ()=>{
         go('lose')
     })
@@ -114,12 +139,22 @@ export default function () {
         player.resolve()
     })
     overlaps('explosion', 'player', (exp, player)=>{
+        play('die')
         destroy(player)
         wait(1, ()=>{
             go('lose')
         })
     })
+    overlaps('enemy', 'player', (enemy, player)=>{
+        play('die')
+        destroy(player)
+        destroy(enemy)
+        wait(1, ()=>{
+            go('lose')
+        })
+    })
     overlaps('powerup', 'player', (powerup, player)=>{
+        play('powerup')
         player.bombPowerup(powerup.frame)
         timerLabel.powerup(powerup.frame)
         destroy(powerup)

@@ -12,6 +12,7 @@ const {
     dt,
     get,
     origin,
+    play,
     pos,
     rotate,
     scale,
@@ -71,7 +72,10 @@ function canBomb() {
     return {
         update() {
             timer-=dt()
-            if( timer<0 ) this.explode()
+            if( timer<0 ) {
+                play('explosion')
+                this.explode()
+            }
         },
         check() {
             if( this.solid ) return
@@ -202,6 +206,7 @@ function spawnBomb() {
     // Check if a bomb is already here, and only spawn if it is clear
     const bombs = get('bomb')
     if( bombs.length===0 || bombs.filter(bomb=>bomb.pos.eq(bombPosition)).length===0 ) {
+        play('laybomb')
         const bomb = add([
             sprite('bomb'),
             scale(2),

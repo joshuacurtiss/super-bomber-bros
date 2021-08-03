@@ -4,6 +4,7 @@ import {POWERUPS} from '../types'
 const {
     add,
     destroy,
+    play,
     pos,
     rand,
     randSeed,
@@ -22,6 +23,7 @@ export default function() {
     randSeed(Date.now());
     return {
         explode() {
+            play('breakbrick')
             destroy(this)
             const explodingBrick = add([
                 sprite('brick'),
@@ -32,6 +34,7 @@ export default function() {
             wait(0.5, ()=>{
                 const frame = randomPowerup()
                 if( frame>=0 ) {
+                    play('powerupappears')
                     add([
                         sprite('powerups', {frame}),
                         scale(2),
