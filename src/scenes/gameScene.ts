@@ -125,24 +125,17 @@ export default function () {
         timerLabel.start()
         player.spawnBomb()
     })
-    keyDown('left', ()=>{
-        timerLabel.start()
-        player.walk(vec2(-1, 0))
+    const dirs = {
+        "left": vec2(-1, 0),
+        "right": vec2(1, 0),
+        "up": vec2(0, -1),
+        "down": vec2(0, 1),
+    }
+    Object.entries(dirs).forEach(([dir, vec])=>{
+        keyDown(dir, ()=>{
+            timerLabel.start()
+            player.walk(vec)
+        })
+        keyRelease(dir, player.stop)
     })
-    keyDown('right', ()=>{
-        timerLabel.start()
-        player.walk(vec2(1, 0))
-    })
-    keyDown('up', ()=>{
-        timerLabel.start()
-        player.walk(vec2(0, -1))
-    })
-    keyDown('down', ()=>{
-        timerLabel.start()
-        player.walk(vec2(0, 1))
-    })
-    keyRelease('left', player.stop)
-    keyRelease('right', player.stop)
-    keyRelease('up', player.stop)
-    keyRelease('down', player.stop)
 }
