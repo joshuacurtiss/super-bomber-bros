@@ -60,6 +60,11 @@ const BLUE = color(0.39, 0.47, 0.937)
 const GREEN = color(0.223, 0.517, 0)
 
 export default function () {
+
+    // Debugging
+    if( location.search.toLowerCase().indexOf("debug")>0 ) {
+        debug.inspect = true
+    }
     
     // Layers
     layers(['bg', 'obj', 'ui'], 'obj')
@@ -86,7 +91,7 @@ export default function () {
     add([rect(mapWidthPixels-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
     add([rect(mapWidthPixels-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
     const timerLabel = add([
-        text("", 16),
+        text("", 16, {noArea}),
         pos(12, 9),
         timer(DEFAULT_GAME_TIME),
     ]);
