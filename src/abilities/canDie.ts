@@ -13,6 +13,7 @@ export default function() {
         isAlive: ()=>!dead,
         die() {
             if( dead ) return
+            dead=true
             play('die')
             this.trigger('died')
             destroy(this)
