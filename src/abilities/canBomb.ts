@@ -83,6 +83,10 @@ function canBomb() {
             const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
             this.solid = playerCenter.dist(bombCenter) > 30
         },
+        remove() {
+            destroy(this)
+            player.decBombCnt()
+        },
         explode() {
             destroy(this)
             const EXP_SCALE = 0.666666667

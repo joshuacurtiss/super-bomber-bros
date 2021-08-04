@@ -21,6 +21,7 @@ loadSound('laybomb', 'assets/sfx/smw_fireball.ogg')
 loadSound('powerupappears', 'assets/sfx/smw_power-up_appears.ogg')
 loadSound('powerup', 'assets/sfx/smw_power-up.ogg')
 loadSound('explosion', 'assets/sfx/smw2_explosion.ogg')
+loadSound('thud', 'assets/sfx/smw_thud.ogg')
 
 // Map
 loadSprite('block', 'assets/map/block.png')
