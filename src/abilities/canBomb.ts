@@ -37,7 +37,9 @@ function canBomb() {
     return {
         setRadius: newradius=>radius=newradius,
         getRadius: ()=>radius,
-        canSpawnBomb: ()=>bombCnt<quantity,
+        canSpawnBomb() {
+            return bombCnt<quantity && this.isAlive()
+        },
         decBombCnt: ()=>--bombCnt,
         incBombCnt: ()=>++bombCnt,
         canBombKick: ()=>bombKick,
