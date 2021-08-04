@@ -12,7 +12,10 @@ const {get, vec2} = k
 function getAtPos(position:Vec2, tag?:string) {
     const {x, y} = position
     const objects = get(tag)
-    return objects.filter(obj=>x>=obj.pos.x && x<=obj.pos.x+obj.width && y>=obj.pos.y && y<=obj.pos.y+obj.height)
+    return objects.filter(obj=>{
+        if( !obj.pos ) return false
+        return x>=obj.pos.x && x<=obj.pos.x+obj.width && y>=obj.pos.y && y<=obj.pos.y+obj.height
+    })
 }
 
 /**
