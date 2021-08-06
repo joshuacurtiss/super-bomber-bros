@@ -91,12 +91,16 @@ function canBomb() {
         },
         explode() {
             destroy(this)
-            const EXP_SCALE = 0.666666667
+            const EXP_SCALE = 0.6666666
+            const AREA_SCALE = 1/EXP_SCALE
+            const area1 = vec2(-14,-14)
+            const area2 = vec2(14,14)
             const expPos = {x: this.pos.x + GRID_PIXEL_SIZE/2, y: this.pos.y + GRID_PIXEL_SIZE/2} as Vec2
             const expOrigin = add([
                 sprite('explosion'),
                 scale(EXP_SCALE),
                 origin('center'),
+                area(area1, area2),
                 pos(expPos),
                 'explosion',
             ])
@@ -132,6 +136,7 @@ function canBomb() {
                         sprite('explosion'),
                         origin('center'), 
                         scale(EXP_SCALE), 
+                        area(area1, area2),
                         pos(newPos), 
                         'explosion',
                     ]))
@@ -146,6 +151,7 @@ function canBomb() {
                         sprite('explosion'),
                         origin('center'), 
                         scale(-EXP_SCALE, EXP_SCALE), 
+                        area(area1, area2),
                         pos(newPos), 
                         'explosion',
                     ]))
@@ -160,6 +166,7 @@ function canBomb() {
                         sprite('explosion'),
                         origin('center'), 
                         scale(EXP_SCALE, -EXP_SCALE), 
+                        area(area1, area2),
                         rotate(33), 
                         pos(x, y + GRID_PIXEL_SIZE*i), 
                         'explosion',
@@ -175,6 +182,7 @@ function canBomb() {
                         sprite('explosion'),
                         origin('center'), 
                         scale(EXP_SCALE), 
+                        area(area1, area2),
                         rotate(33), 
                         pos(x, y - GRID_PIXEL_SIZE*i), 
                         'explosion',
