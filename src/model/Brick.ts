@@ -3,6 +3,7 @@ import {POWERUPS} from '../types'
 
 const {
     add,
+    area,
     destroy,
     play,
     pos,
@@ -10,6 +11,7 @@ const {
     randSeed,
     scale,
     sprite,
+    vec2,
     wait,
 } = k
 
@@ -38,6 +40,7 @@ export default function() {
                     add([
                         sprite('powerups', {frame}),
                         scale(2),
+                        area(vec2(4,4), vec2(12,12)),
                         pos(explodingBrick.pos),
                         'powerup',
                     ])
