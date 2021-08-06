@@ -8,16 +8,19 @@ import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
 import {GRID_PIXEL_SIZE} from '../types'
 
 const DEFAULT_GAME_TIME = 180
+const GRAVITY = 300
 
 const {
     action,
     add, 
     addLevel, 
     area,
+    body,
     color,
     debug,
     destroy,
     go, 
+    gravity,
     keyDown, 
     keyPress, 
     keyRelease,
@@ -73,6 +76,9 @@ export default function () {
     
     // Layers
     layers(['bg', 'obj', 'ui'], 'obj')
+    
+    // Gravity
+    gravity(GRAVITY)
     
     // Level/Map
     const mapConfig = {
@@ -134,23 +140,58 @@ export default function () {
         }
         // Randomized timeslots for hazard
         const times=[rand(3,8), rand(12,19), rand(25,35), rand(38,42), rand( 43,48), rand(49,51), rand(52,56)]
-        times.forEach(t=>{
-            wait(t, ()=>{
-                play('bullet')
-                const dir = rand()>0.5 ? 1 : -1
-                const bullet = add([
-                    sprite('bullet'),
-                    scale(dir, 1),
-                    pos(dir===1 ? -GRID_PIXEL_SIZE*3 : width()+GRID_PIXEL_SIZE, Math.floor(rand(0, mapHeightPixels-GRID_PIXEL_SIZE))),
-                    'enemy',
-                ])
-                bullet.action(()=>{
-                    bullet.move(125 * bullet.scale.x,0)
-                    if( bullet.scale.x>0 && bullet.pos.x > width() ) destroy(bullet)
-                    if( bullet.scale.x<0 && bullet.pos.x < -bullet.width ) destroy(bullet)
+        if( rand()>0.5 ) {
+            debug.log("You better run, better run, faster than my bullet...")
+            times.forEach(t=>{
+                wait(t, ()=>{
+                    play('bullet')
+                    const dir = rand()>0.5 ? 1 : -1
+                    const bullet = add([
+                        sprite('bullet'),
+                        scale(dir, 1),
+                        pos(dir===1 ? -GRID_PIXEL_SIZE*3 : width()+GRID_PIXEL_SIZE, Math.floor(rand(0, mapHeightPixels-GRID_PIXEL_SIZE))),
+                        'enemy',
+                    ])
+                    bullet.action(()=>{
+                        bullet.move(125 * bullet.scale.x,0)
+                        if( bullet.scale.x>0 && bullet.pos.x > width() ) destroy(bullet)
+                        if( bullet.scale.x<0 && bullet.pos.x < -bullet.width ) destroy(bullet)
+                    })
                 })
             })
-        })
+        } else {
+            debug.log("Gone fishin'...")
+            times.forEach(t=>{
+                wait(t, ()=>{
+                    const dir = rand()>0.5 ? 1 : -1
+                    const jumpForce = rand(250, 550)
+                    const horizForce = rand(100, 250) * dir
+                    const x = dir>0 ? rand(-GRID_PIXEL_SIZE*4,mapWidthPixels*0.3) : rand(mapWidthPixels*0.7, mapWidthPixels+GRID_PIXEL_SIZE*4)
+                    const y = mapHeightPixels+GRID_PIXEL_SIZE
+                    const fish = add([
+                        sprite('fish'),
+                        scale(dir*2, 2),
+                        layer('ui'),
+                        pos(x, y),
+                        body({jumpForce}),
+                        'enemy',
+                    ])
+                    fish.play('fish')
+                    fish.jump()
+                    fish.action(()=>{
+                        fish.move(horizForce,0)
+                        if( fish.pos.y <= y ) {
+                            getAtPos(fish.pos, 'player').forEach(obj=>{
+                                obj.die()
+                                destroy(fish)
+                            })
+                        } else {
+                            destroy(fish)
+                        }
+                    })
+                })
+            })
+        }
     })
     timerLabel.on('timer_end', ()=>{
         go('lose')
