@@ -1,10 +1,9 @@
 import k from '../kaboom'
-import {getAtPos} from '../util'
-import {GRID_PIXEL_SIZE, POWERUPS} from '../types'
+import {getAtPos, snapToGrid} from '../util'
+import {LEFT, RIGHT, UP, DOWN, IDLE, GRID_PIXEL_SIZE, POWERUPS, BOMB_SPEED} from '../types'
 import {Vec2} from 'kaboom'
 
 const {
-    action,
     add,
     area,
     debug,
@@ -58,6 +57,16 @@ function canBomb() {
                 pbomb=true
                 debug.log(`Sweet, let it all out!`)
             }
+        },
+        kickBomb(bomb) {
+            if( ! this.canBombKick() ) return
+            const chunk = GRID_PIXEL_SIZE*0.4
+            const diff = bomb.pos.sub(this.pos)
+            bomb.moving = diff.x > chunk ? RIGHT :
+                diff.x < -chunk ? LEFT : 
+                diff.y > chunk ? DOWN : 
+                diff.y < -chunk ? UP : IDLE
+            debug.log(`Kick bomb: ${bomb.moving.x},${bomb.moving.y}`)
         }
     }
 }
@@ -78,11 +87,31 @@ function canBomb() {
                 play('explosion')
                 this.explode()
             }
+            // Move bomb
+            if( this.moving && !this.moving.eq(IDLE) ) {
+                const {x, y} = this.moving
+                const chkPosOffset = x+y<0 ? 0.5 : 1.1 
+                const items=getAtPos(this.pos.add(this.moving.scale(GRID_PIXEL_SIZE*chkPosOffset)))
+                const hasBlocker = items.some(item=>{
+                    if( item.is('block') ) return true
+                    if( item.is('brick') ) return true
+                    if( item.is('powerup') ) return true
+                    if( item.is('bomb') ) return true
+                    if( item.is('player') ) return true
+                })
+                if( hasBlocker ) {
+                    this.pos = snapToGrid(this.pos)
+                    this.moving = IDLE
+                } else {
+                    this.move(this.moving.scale(BOMB_SPEED))
+                }
+            }
             // Check if bomb should be made solid
-            if( this.solid ) return
-            const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
-            const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
-            this.solid = playerCenter.dist(bombCenter) > 30
+            if( !this.solid ) {
+                const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
+                const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
+                this.solid = playerCenter.dist(bombCenter) > 30
+            }
         },
         remove() {
             destroy(this)
@@ -91,10 +120,9 @@ function canBomb() {
         explode() {
             destroy(this)
             const EXP_SCALE = 0.6666666
-            const AREA_SCALE = 1/EXP_SCALE
             const area1 = vec2(-14,-14)
             const area2 = vec2(14,14)
-            const expPos = {x: this.pos.x + GRID_PIXEL_SIZE/2, y: this.pos.y + GRID_PIXEL_SIZE/2} as Vec2
+            const expPos = snapToGrid(this.pos).add(vec2(GRID_PIXEL_SIZE/2, GRID_PIXEL_SIZE/2))
             const expOrigin = add([
                 sprite('explosion'),
                 scale(EXP_SCALE),
@@ -206,16 +234,9 @@ function canBomb() {
 function spawnBomb() {
     // Do not spawn if you have no more left
     if( ! this.canSpawnBomb() ) return
-    // Snap the bomb to the grid size
-    // We use player's area instead of sprite position to be a little more accurate to what the player expects. 
-    // Also, we add a couple pixels vertically so the placement favors the feet over the head.
-    let {x, y} = this.pos.add(this.area.p1).add(vec2(0, 2))
-    let modX = x % GRID_PIXEL_SIZE
-    let modY = y % GRID_PIXEL_SIZE
-    const bombPosition = {
-        x: Math.round(x - modX + (modX<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE)),
-        y: Math.round(y - modY + (modY<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE)),
-    } as Vec2
+    // Snap bomb to grid. Use player's area instead of sprite position to be a little more accurate to what player
+    // expects. Also, we add a couple pixels vertically so the placement favors the feet over the head.
+    const bombPosition = snapToGrid(this.pos.add(this.area.p1).add(vec2(0, 2)))
     // Check if a bomb is already here, and only spawn if it is clear
     const bombs = get('bomb')
     if( bombs.length===0 || bombs.filter(bomb=>bomb.pos.eq(bombPosition)).length===0 ) {

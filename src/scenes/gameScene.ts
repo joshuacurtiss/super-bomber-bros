@@ -10,6 +10,7 @@ import maps from '../maps.json'
 
 import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
 import {
+    DIRS,
     GRID_PIXEL_SIZE,
     MAP_WIDTH,
     MAP_WIDTH_PIXELS,
@@ -53,7 +54,7 @@ const {
     wait,
 } = k
 
-export default function (mapId=0) {
+export default function (mapId=1) {
 
     const map=maps[mapId]
 
@@ -164,6 +165,9 @@ export default function (mapId=0) {
             go('lose')
         })
     })
+    overlaps('bomb', 'player', (bomb, player)=>{
+        if( bomb.solid ) player.kickBomb(bomb)
+    })
     overlaps('explosion', 'player', (exp, player)=>{
         player.die()
     })
@@ -205,14 +209,8 @@ export default function (mapId=0) {
         timerLabel.start()
         player.spawnBomb()
     })
-    const dirs = {
-        "left": vec2(-1, 0),
-        "right": vec2(1, 0),
-        "up": vec2(0, -1),
-        "down": vec2(0, 1),
-    }
-    Object.entries(dirs).forEach(([dir, vec])=>{
-        keyDown(dir, ()=>{
+    Object.entries(DIRS).forEach(([dir, vec])=>{
+        keyDown(dir.toLowerCase(), ()=>{
             timerLabel.start()
             player.walk(vec)
         })
