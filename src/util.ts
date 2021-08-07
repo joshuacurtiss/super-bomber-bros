@@ -55,10 +55,24 @@ function convertMapPosToCoord(pos:Vec2): Vec2 {
     return vec2(x*GRID_PIXEL_SIZE, (y+1)*GRID_PIXEL_SIZE)
 }
 
+/**
+ * Receives a position and returns that position snapped to the grid.
+ * @param pos Position to adjust.
+ */
+ function snapToGrid(pos:Vec2) {
+    let {x, y} = pos
+    let modX = x % GRID_PIXEL_SIZE
+    let modY = y % GRID_PIXEL_SIZE
+    return vec2(
+        Math.round(x - modX + (modX<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE)),
+        Math.round(y - modY + (modY<=GRID_PIXEL_SIZE/2 ? 0 : GRID_PIXEL_SIZE))
+    )
+}
 
 export {
+    convertMapPosToCoord,
     findMapItems,
     findMapItem,
-    convertMapPosToCoord,
     getAtPos,
+    snapToGrid,
 }
