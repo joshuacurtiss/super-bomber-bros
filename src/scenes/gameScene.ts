@@ -2,13 +2,26 @@ import k from '../kaboom'
 import canBomb from '../abilities/canBomb'
 import canDie from '../abilities/canDie'
 import canWalk from '../abilities/canWalk'
+import bullet from '../hazards/Bullet'
+import fish from '../hazards/Fish'
 import brick from '../model/Brick'
 import timer from '../model/Timer'
 import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
-import {GRID_PIXEL_SIZE} from '../types'
+import {
+    GRID_PIXEL_SIZE,
+    MAP_WIDTH,
+    MAP_WIDTH_PIXELS,
+    MAP_HEIGHT,
+    MAP_HEIGHT_PIXELS,
+    BLUE,
+    GREEN,
+    WHITE,
+} from '../types'
 
 const DEFAULT_GAME_TIME = 180
 const GRAVITY = 300
+
+const noArea = true
 
 const {
     action,
@@ -16,7 +29,6 @@ const {
     addLevel, 
     area,
     body,
-    color,
     debug,
     destroy,
     go, 
@@ -37,7 +49,6 @@ const {
     text,
     vec2, 
     wait,
-    width,
 } = k
 
 const map = [
@@ -55,17 +66,6 @@ const map = [
     '#4  OOOO OO  3#',
     '###############',
 ]
-
-const noArea = true
-
-const mapWidth = map[0].length
-const mapWidthPixels = mapWidth * GRID_PIXEL_SIZE
-const mapHeight = map.length
-const mapHeightPixels = mapHeight * GRID_PIXEL_SIZE
-
-const WHITE = color(1, 1, 1)
-const BLUE = color(0.39, 0.47, 0.937)
-const GREEN = color(0.223, 0.517, 0)
 
 export default function () {
 
@@ -92,15 +92,15 @@ export default function () {
     }
     addLevel(map, mapConfig)
     add([
-        rect(mapWidthPixels, mapHeightPixels, {noArea}),
+        rect(MAP_WIDTH_PIXELS, MAP_HEIGHT_PIXELS, {noArea}),
         pos(0, GRID_PIXEL_SIZE),
         GREEN,
         layer('bg'),
     ])
 
     // Header/Timer
-    add([rect(mapWidthPixels-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
-    add([rect(mapWidthPixels-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
+    add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
+    add([rect(MAP_WIDTH_PIXELS-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
     const timerLabel = add([
         text("", 16, {noArea}),
         pos(12, 9),
@@ -122,7 +122,7 @@ export default function () {
                     sprite('block'),
                     scale(2),
                     'fallingblock',
-                    pos(vec2(x, y).sub(vec2(0, mapHeight)).scale(GRID_PIXEL_SIZE)),
+                    pos(vec2(x, y).sub(vec2(0, MAP_HEIGHT)).scale(GRID_PIXEL_SIZE)),
                     { targ }
                 ])
             })
@@ -130,66 +130,25 @@ export default function () {
         // For 3 layers, drop bricks around the perimeter (T/R/B/L)
         for( let i=1 ; i<=3 ; i+=1 ) {
             y=1+i
-            for( x=i ; x<mapWidth-i ; x+=1 ) handleBrick(t+=SPEED, x, y)
-            x=mapWidth-i-1
-            for( y=2+i ; y<mapHeight-i ; y+=1 ) handleBrick(t+=SPEED, x, y)
-            y=mapHeight-i
-            for( x=mapWidth-1-i ; x>=i ; x-=1 ) handleBrick(t+=SPEED, x, y)
+            for( x=i ; x<MAP_WIDTH-i ; x+=1 ) handleBrick(t+=SPEED, x, y)
+            x=MAP_WIDTH-i-1
+            for( y=2+i ; y<MAP_HEIGHT-i ; y+=1 ) handleBrick(t+=SPEED, x, y)
+            y=MAP_HEIGHT-i
+            for( x=MAP_WIDTH-1-i ; x>=i ; x-=1 ) handleBrick(t+=SPEED, x, y)
             x=i
-            for( y=mapHeight-i-1 ; y>i+1 ; y-=1 ) handleBrick(t+=SPEED, x, y)
+            for( y=MAP_HEIGHT-i-1 ; y>i+1 ; y-=1 ) handleBrick(t+=SPEED, x, y)
         }
         // Randomized timeslots for hazard
         const times=[rand(3,8), rand(12,19), rand(25,35), rand(38,42), rand( 43,48), rand(49,51), rand(52,56)]
         if( rand()>0.5 ) {
             debug.log("You better run, better run, faster than my bullet...")
             times.forEach(t=>{
-                wait(t, ()=>{
-                    play('bullet')
-                    const dir = rand()>0.5 ? 1 : -1
-                    const bullet = add([
-                        sprite('bullet'),
-                        scale(dir, 1),
-                        pos(dir===1 ? -GRID_PIXEL_SIZE*3 : width()+GRID_PIXEL_SIZE, Math.floor(rand(0, mapHeightPixels-GRID_PIXEL_SIZE))),
-                        'enemy',
-                    ])
-                    bullet.action(()=>{
-                        bullet.move(125 * bullet.scale.x,0)
-                        if( bullet.scale.x>0 && bullet.pos.x > width() ) destroy(bullet)
-                        if( bullet.scale.x<0 && bullet.pos.x < -bullet.width ) destroy(bullet)
-                    })
-                })
+                wait(t, bullet)
             })
         } else {
             debug.log("Gone fishin'...")
             times.forEach(t=>{
-                wait(t, ()=>{
-                    const dir = rand()>0.5 ? 1 : -1
-                    const jumpForce = rand(250, 550)
-                    const horizForce = rand(100, 250) * dir
-                    const x = dir>0 ? rand(-GRID_PIXEL_SIZE*4,mapWidthPixels*0.3) : rand(mapWidthPixels*0.7, mapWidthPixels+GRID_PIXEL_SIZE*4)
-                    const y = mapHeightPixels+GRID_PIXEL_SIZE
-                    const fish = add([
-                        sprite('fish'),
-                        scale(dir*2, 2),
-                        layer('ui'),
-                        pos(x, y),
-                        body({jumpForce}),
-                        'enemy',
-                    ])
-                    fish.play('fish')
-                    fish.jump()
-                    fish.action(()=>{
-                        fish.move(horizForce,0)
-                        if( fish.pos.y <= y ) {
-                            getAtPos(fish.pos, 'player').forEach(obj=>{
-                                obj.die()
-                                destroy(fish)
-                            })
-                        } else {
-                            destroy(fish)
-                        }
-                    })
-                })
+                wait(t, fish)
             })
         }
     })
