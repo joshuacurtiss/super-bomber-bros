@@ -174,6 +174,7 @@ export default function (mapId=0) {
     overlaps('powerup', 'player', (powerup, player)=>{
         play('powerup')
         player.bombPowerup(powerup.frame)
+        player.walkPowerup(powerup.frame)
         timerLabel.powerup(powerup.frame)
         destroy(powerup)
     })

@@ -16,7 +16,7 @@ export const WALK_SPEED = 120
 export const POWERUPS: Record<string, number> = {
     RADIUS: 0,
     QUANTITY: 2,
-    // SPEED: 3,
+    SPEED: 3,
     // KICK: 4,
     // BRICK_SHIFT: 7,
     // SKULL: 12,
