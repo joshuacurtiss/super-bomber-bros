@@ -6,6 +6,8 @@ import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
 import brick from '../model/Brick'
 import timer from '../model/Timer'
+import maps from '../maps.json'
+
 import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
 import {
     GRID_PIXEL_SIZE,
@@ -51,23 +53,9 @@ const {
     wait,
 } = k
 
-const map = [
-    '###############',
-    '#1  OO OOOO  2#',
-    '# #O###O#O### #',
-    '# OOO OO#OOOO #',
-    '#O###O# ###O#O#',
-    '#O#OOOO OO#OOO#',
-    '#O#O#O# #O#O#O#',
-    '#OOO#OO OOOO#O#',
-    '#O#O### #O###O#',
-    '# OOO #OOO OO #',
-    '# ###O#O###O# #',
-    '#4  OOOO OO  3#',
-    '###############',
-]
+export default function (mapId=0) {
 
-export default function () {
+    const map=maps[mapId]
 
     // Debugging
     if( location.search.toLowerCase().indexOf("debug")>0 ) {

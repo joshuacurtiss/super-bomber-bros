@@ -1,0 +1,31 @@
+[
+    [
+        "###############",
+        "#1  OOOOOOO  2#",
+        "# #O#O#O#O#O# #",
+        "# OOOOOOOOOOO #",
+        "#O#O#O# #O#O#O#",
+        "#OOOOO   OOOOO#",
+        "# #O#O# #O#O# #",
+        "#OOOOOO OOOOOO#",
+        "#O#O#O# #O#O#O#",
+        "# OOOOOOOOOOO #",
+        "# #O#O#O#O#O# #",
+        "#   OOOOOOO   #",
+        "###############"
+    ], [
+        "###############",
+        "#1  OO OOOO  2#",
+        "# #O###O#O### #",
+        "# OOO OO#OOOO #",
+        "#O###O# ###O#O#",
+        "#O#OOOO OO#OOO#",
+        "#O#O#O# #O#O#O#",
+        "#OOO#OO OOOO#O#",
+        "#O#O### #O###O#",
+        "# OOO #OOO OO #",
+        "# ###O#O###O# #",
+        "#4  OOOO OO  3#",
+        "###############"
+    ]
+]
