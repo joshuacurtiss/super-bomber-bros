@@ -28,7 +28,10 @@ export default function () {
         origin('center'),
         pos(width()*0.5, height()*0.7 )
     ])
+    // URL 
+    const params = new URLSearchParams(location.search)
+    const level = params.get('level')==null ? 1 : params.get('level')
     keyPress('space', ()=>{
-        go('game')
+        go('game', level)
     })
 }
