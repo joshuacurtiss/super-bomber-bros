@@ -33,7 +33,6 @@ function canBomb() {
     let bombCnt = 0
     let bombKick = false
     let pbomb = false
-    action("bomb", b => b.check())
     return {
         setRadius: newradius=>radius=newradius,
         getRadius: ()=>radius,
@@ -73,13 +72,13 @@ function canBomb() {
     let timer = 3
     return {
         update() {
+            // Check if bomb should explode
             timer-=dt()
             if( timer<0 ) {
                 play('explosion')
                 this.explode()
             }
-        },
-        check() {
+            // Check if bomb should be made solid
             if( this.solid ) return
             const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
             const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
