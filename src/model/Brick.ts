@@ -17,7 +17,7 @@ const {
 
 function randomPowerup():number {
     const validIndices = Object.values(POWERUPS)
-    const index = Math.floor(rand(0, 14))
+    const index = Math.floor(rand(0, 15))
     return validIndices.includes(index) ? index : -1
 }
 
