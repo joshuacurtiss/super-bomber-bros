@@ -1,11 +1,8 @@
 import { GameObj } from 'kaboom'
-import k from '../kaboom'
+import { k, debug } from '../kaboom'
 import { POWERUPS } from '../types'
 
-const {
-    debug,
-    time,
-} = k
+const {time} = k
 
 const WARN_TIME = 60
 
@@ -33,13 +30,12 @@ function timer(maxTime: number) {
         start() {
             if( !start ) {
                 start=time()
-                debug.clearLog()
             }
         },
         powerup(index: number) {
             if( index===POWERUPS.TIME ) {
                 maxTime+=30
-                debug.log('Sweet, you just increased game time by 30 sec!')
+                debug('Sweet, you just increased game time by 30 sec!')
             }
         },
         update() {

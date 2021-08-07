@@ -1,4 +1,4 @@
-import k from '../kaboom'
+import {k, debug} from '../kaboom'
 import canBomb from '../abilities/canBomb'
 import canDie from '../abilities/canDie'
 import canWalk from '../abilities/canWalk'
@@ -31,8 +31,6 @@ const {
     add, 
     addLevel, 
     area,
-    body,
-    debug,
     destroy,
     go, 
     gravity,
@@ -58,11 +56,6 @@ export default function (mapId=1) {
 
     const map=maps[mapId]
 
-    // Debugging
-    if( location.search.toLowerCase().indexOf("debug")>0 ) {
-        debug.inspect = true
-    }
-    
     // Layers
     layers(['bg', 'obj', 'ui'], 'obj')
     
@@ -96,7 +89,7 @@ export default function (mapId=1) {
         timer(DEFAULT_GAME_TIME),
     ]);
     timerLabel.on('timer_warning', ()=>{
-        debug.log("Time's running out!")
+        debug("Time's running out!")
         play('hurryup')
         // Falling blocks shrink the board
         const SPEED=0.5
@@ -130,12 +123,12 @@ export default function (mapId=1) {
         // Randomized timeslots for hazard
         const times=[rand(3,8), rand(12,19), rand(25,35), rand(38,42), rand( 43,48), rand(49,51), rand(52,56)]
         if( rand()>0.5 ) {
-            debug.log("You better run, better run, faster than my bullet...")
+            debug("You better run, better run, faster than my bullet...")
             times.forEach(t=>{
                 wait(t, bullet)
             })
         } else {
-            debug.log("Gone fishin'...")
+            debug("Gone fishin'...")
             times.forEach(t=>{
                 wait(t, fish)
             })
@@ -216,4 +209,7 @@ export default function (mapId=1) {
         })
         keyRelease(dir, player.stop)
     })
+
+    // Debugging
+    k.debug.clearLog()
 }

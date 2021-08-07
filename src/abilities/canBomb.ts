@@ -1,4 +1,4 @@
-import k from '../kaboom'
+import {k, debug} from '../kaboom'
 import {getAtPos, snapToGrid} from '../util'
 import {LEFT, RIGHT, UP, DOWN, IDLE, GRID_PIXEL_SIZE, POWERUPS, BOMB_SPEED} from '../types'
 import {Vec2} from 'kaboom'
@@ -6,7 +6,6 @@ import {Vec2} from 'kaboom'
 const {
     add,
     area,
-    debug,
     destroy,
     dt,
     get,
@@ -46,16 +45,16 @@ function canBomb() {
         bombPowerup(index: number) {
             if( index===POWERUPS.RADIUS ) {
                 radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
-                debug.log(`Sweet, your bomb radius is now ${radius}!`)
+                debug(`Sweet, your bomb radius is now ${radius}!`)
             } else if( index===POWERUPS.QUANTITY ) {
                 quantity = quantity<MAX_QUANTITY ? quantity+1 : MAX_QUANTITY
-                debug.log(`Sweet, you can now drop ${quantity} bombs!`)
+                debug(`Sweet, you can now drop ${quantity} bombs!`)
             } else if( index===POWERUPS.KICK ) {
                 bombKick=true
-                debug.log(`Kickin' the can!`)
+                debug(`Kickin' the can!`)
             } else if( index===POWERUPS.P_BOMB ) {
                 pbomb=true
-                debug.log(`Sweet, let it all out!`)
+                debug(`Sweet, let it all out!`)
             }
         },
         kickBomb(bomb) {
@@ -66,7 +65,7 @@ function canBomb() {
                 diff.x < -chunk ? LEFT : 
                 diff.y > chunk ? DOWN : 
                 diff.y < -chunk ? UP : IDLE
-            debug.log(`Kick bomb: ${bomb.moving.x},${bomb.moving.y}`)
+            debug(`Kick bomb: ${bomb.moving.x},${bomb.moving.y}`)
         }
     }
 }

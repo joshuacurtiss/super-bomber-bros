@@ -1,10 +1,8 @@
 import { Vec2 } from 'kaboom'
-import { updateLanguageServiceSourceFile } from 'typescript'
-import k from '../kaboom'
+import { k, debug } from '../kaboom'
 import { POWERUPS, WALK_SPEED } from '../types'
 
 const {
-    debug,
     time,
     vec2,
 } = k
@@ -30,7 +28,7 @@ function canWalk(speed: number = WALK_SPEED) {
             if( index===POWERUPS.SPEED ) {
                 multiplier=2
                 multiplierTimeout = (multiplierTimeout>0 ? multiplierTimeout : time()) + 30
-                debug.log(`Greased LIGHTNING!`)
+                debug(`Greased LIGHTNING!`)
             }
         },  
         update() {
@@ -38,7 +36,7 @@ function canWalk(speed: number = WALK_SPEED) {
             if( time() > multiplierTimeout ) {
                 multiplierTimeout=0
                 multiplier=1
-                debug.log("Back to normal speed.")
+                debug("Back to normal speed.")
             }
         }
     }
