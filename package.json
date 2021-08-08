@@ -7,10 +7,10 @@
   "license": "MIT",
   "scripts": {
     "serve": "live-server --port=8000 --no-browser dist",
-    "start": "parcel src/index.html -p 8000",
-    "build": "parcel build --public-url '.' src/index.html --out-dir dist",
+    "start": "parcel src/client/index.html -p 8000",
+    "build": "parcel build --public-url '.' src/client/index.html --out-dir dist",
     "build:docker": "docker build . -t joshuacurtiss/super-bomber-bros",
-    "watch": "parcel watch src/index.html --out-dir dist"
+    "watch": "parcel watch src/client/index.html --out-dir dist"
   },
   "dependencies": {
     "kaboom": "^0.5.1",
