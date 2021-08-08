@@ -193,7 +193,8 @@ export default function (mapId=1) {
                 else if( obj._tags.length ) destroy(obj)
             })
             // Finally, make the block solid so can't walk thru
-            b.solid=true
+            b.use(solid())
+            b.use('block')
         }
     })
 
