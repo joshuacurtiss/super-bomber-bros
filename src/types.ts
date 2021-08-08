@@ -34,5 +34,5 @@ export const POWERUPS: Record<string, number> = {
     // SKULL: 12,
     // HEART: 13,
     TIME: 14,
-    // P_BOMB: 15,
+    P_BOMB: 15,
 }

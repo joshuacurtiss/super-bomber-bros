@@ -42,6 +42,8 @@ function canBomb() {
         canBombKick: ()=>bombKick,
         canPBomb: ()=>pbomb,
         spawnBomb,
+        spawnBombAtPos,
+        spawnPBomb,
         bombPowerup(index: number) {
             if( index===POWERUPS.RADIUS ) {
                 radius = radius<MAX_RADIUS ? radius+1 : MAX_RADIUS
@@ -227,29 +229,59 @@ function canBomb() {
 }
 
 /**
- * Spawns a new bomb at the player's position. It snaps the position to the grid so the bomb fits cleanly on the grid.
- * If a bomb already exists at the location, it will not spawn another one.
+ * Spawns a new bomb at the provided position. It snaps the position to the grid so the bomb fits cleanly on the grid.
+ * If a bomb/brick/block already exists at the location, it will not spawn.
  */
-function spawnBomb() {
+function spawnBombAtPos(position: Vec2): boolean {
     // Do not spawn if you have no more left
-    if( ! this.canSpawnBomb() ) return
-    // Snap bomb to grid. Use player's area instead of sprite position to be a little more accurate to what player
-    // expects. Also, we add a couple pixels vertically so the placement favors the feet over the head.
-    const bombPosition = snapToGrid(this.pos.add(this.area.p1).add(vec2(0, 2)))
-    // Check if a bomb is already here, and only spawn if it is clear
-    const bombs = get('bomb')
-    if( bombs.length===0 || bombs.filter(bomb=>bomb.pos.eq(bombPosition)).length===0 ) {
-        play('laybomb')
-        const bomb = add([
-            sprite('bomb'),
-            scale(2),
-            area(vec2(2,4), vec2(14,16)),
-            pos(bombPosition),
-            bombTimer(this),
-            'bomb',
-        ])
-        bomb.play('bomb')
-        this.incBombCnt()
+    if( ! this.canSpawnBomb() ) return false
+    // Snap position to grid. 
+    const snappedPosition = snapToGrid(position)
+    // Check if bomb/block/brick is already here, and only spawn if it is clear
+    const objs = get().filter(obj=>{
+        if( !obj.pos?.eq(snappedPosition) ) return false 
+        return obj.is('bomb') || obj.is('block') || obj.is('brick') || obj.is('powerup')
+    })
+    if( objs.length ) return false
+    // All good? Spawn the bomb.
+    play('laybomb')
+    const bomb = add([
+        sprite('bomb'),
+        scale(2),
+        area(vec2(2,4), vec2(14,16)),
+        pos(snappedPosition),
+        bombTimer(this),
+        'bomb',
+    ])
+    bomb.play('bomb')
+    this.incBombCnt()
+    return true
+}
+
+/**
+ * Spawns a new bomb at the player's position.
+ */
+function spawnBomb(): boolean {
+    // Use player's area instead of sprite position to be a little more accurate to what player expects. 
+    // Also, we add a couple pixels vertically so the placement favors the feet over the head.
+    return this.spawnBombAtPos(this.pos.add(this.area.p1).add(vec2(0, 2)))
+}
+
+/**
+ * Spawns P-Bomb at the player's position.
+ */
+function spawnPBomb() {
+    let i=0
+    let success=true
+    // Just keep spawning bombs until you get back a failure. It may be because you ran out of bombs or
+    // because something got in the way. Either way, it works.
+    while( success ) {
+        i+=1
+        // Use player's area instead of sprite position to be a little more accurate to what player expects. 
+        // Also, we add a couple pixels vertically so the placement favors the feet over the head. Then we
+        // go `i` grid positions from the player.
+        const p = this.pos.add(this.area.p1).add(vec2(0, 2)).add(this.getDir().scale(i*GRID_PIXEL_SIZE))
+        success = this.spawnBombAtPos(p)
     }
 }
 

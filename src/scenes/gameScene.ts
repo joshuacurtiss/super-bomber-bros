@@ -48,6 +48,7 @@ const {
     solid,
     sprite,
     text,
+    time,
     vec2, 
     wait,
 } = k
@@ -199,9 +200,22 @@ export default function (mapId=1) {
     })
 
     // Controls
+    let lastSpaceTime=0
+    let lastSpacePos=vec2(0, 0)
+    // Space and Double-space for bombs and P-Bombs
     keyPress('space', ()=>{
         timerLabel.start()
-        player.spawnBomb()
+        const t = time()
+        const p = player.pos.clone()
+        // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
+        if( t-lastSpaceTime<0.3 && p.eq(lastSpacePos) ) {
+            player.spawnPBomb()
+            lastSpaceTime=0
+        } else {
+            player.spawnBomb()
+            lastSpaceTime=t
+            lastSpacePos=p
+        }
     })
     Object.entries(DIRS).forEach(([dir, vec])=>{
         keyDown(dir.toLowerCase(), ()=>{
