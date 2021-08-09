@@ -96,9 +96,10 @@ function canBomb() {
                 const hasBlocker = items.some(item=>{
                     if( item.is('block') ) return true
                     if( item.is('brick') ) return true
-                    if( item.is('powerup') ) return true
                     if( item.is('bomb') ) return true
                     if( item.is('player') ) return true
+                    // If bomb slides over a powerup, just destroy it
+                    if( item.is('powerup') ) destroy(item)
                 })
                 if( hasBlocker ) {
                     this.pos = snapToGrid(this.pos)
