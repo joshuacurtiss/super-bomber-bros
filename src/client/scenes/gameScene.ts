@@ -190,7 +190,7 @@ export default function (mapId=1) {
             // Find everything under the block. Kill players, remove bombs, just destroy everything else that is tagged
             getAtPos(b.targ).forEach(obj=>{
                 if( obj.is("player") ) obj.die()
-                else if( obj.is("bomb") ) obj.remove()
+                else if( obj.is("bomb") ) obj.explode()
                 else if( obj._tags.length ) destroy(obj)
             })
             // Finally, make the block solid so can't walk thru
