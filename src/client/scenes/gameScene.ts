@@ -16,6 +16,8 @@ import {
     MAP_WIDTH_PIXELS,
     MAP_HEIGHT,
     MAP_HEIGHT_PIXELS,
+    MUSIC_HURRY_DETUNE,
+    MUSIC_HURRY_SPEED,
     BLUE,
     GREEN,
     WHITE,
@@ -31,6 +33,7 @@ const {
     add, 
     addLevel, 
     area,
+    choose,
     destroy,
     go, 
     gravity,
@@ -39,6 +42,7 @@ const {
     keyRelease,
     layer,
     layers, 
+    loadSound,
     overlaps,
     play,
     pos, 
@@ -53,9 +57,16 @@ const {
     wait,
 } = k
 
-export default function (mapId=1) {
+export default async function (mapId=1) {
 
     const map=maps[mapId]
+    const volume=0.25
+    let music
+
+    // Music
+    const musicPrefix = choose(['mb', 'mp'])
+    await loadSound('music-intro', `assets/music/${musicPrefix}i.ogg`)
+    await loadSound('music', `assets/music/${musicPrefix}.ogg`)
 
     // Layers
     layers(['bg', 'obj', 'ui'], 'obj')
@@ -91,7 +102,15 @@ export default function (mapId=1) {
     ]);
     timerLabel.on('timer_warning', ()=>{
         debug("Time's running out!")
+        music.pause()
         play('hurryup')
+        wait(3.3, ()=>{
+            if( player.isAlive() ) {
+                music.speed(MUSIC_HURRY_SPEED)
+                music.detune(MUSIC_HURRY_DETUNE)
+                music.play()
+            }
+        })
         // Falling blocks shrink the board
         const SPEED=0.5
         let x
@@ -139,6 +158,27 @@ export default function (mapId=1) {
         go('lose')
     })
 
+    const startGame = () => {
+        if( !timerLabel.started() ) {
+            timerLabel.start()
+            music = play('music-intro', {
+                volume,
+                detune: timerLabel.getHurry() ? MUSIC_HURRY_DETUNE : 0, 
+                speed: timerLabel.getHurry() ? MUSIC_HURRY_SPEED : 1
+            })
+            wait(2.4, ()=>{
+                if( !music.paused() && player.isAlive() ) {
+                    music = play('music', {
+                        volume, 
+                        loop: true, 
+                        detune: timerLabel.getHurry() ? MUSIC_HURRY_DETUNE : 0,
+                        speed: timerLabel.getHurry() ? MUSIC_HURRY_SPEED : 1
+                    })
+                }
+            })
+        }
+    }
+
     // Player
     const {x: playerX, y: playerY} = convertMapPosToCoord(findMapItem(map, '1'))
     const player = add([
@@ -155,6 +195,8 @@ export default function (mapId=1) {
         player.resolve()
     })
     player.on('died', ()=>{
+        music.stop()
+        timerLabel.pause()
         wait(2, ()=>{
             go('lose')
         })
@@ -204,7 +246,7 @@ export default function (mapId=1) {
     let lastSpacePos=vec2(0, 0)
     // Space and Double-space for bombs and P-Bombs
     keyPress('space', ()=>{
-        timerLabel.start()
+        startGame()
         const t = time()
         const p = player.pos.clone()
         // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
@@ -219,7 +261,7 @@ export default function (mapId=1) {
     })
     Object.entries(DIRS).forEach(([dir, vec])=>{
         keyDown(dir.toLowerCase(), ()=>{
-            timerLabel.start()
+            startGame()
             player.walk(vec)
         })
         keyRelease(dir, player.stop)

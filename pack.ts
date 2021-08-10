@@ -13,17 +13,14 @@ function findAudio(dir: string): string[] {
     })
     return files
 }
-function convertAudio(files: string[]) {
+function convertAudio(files: string[], dest: string) {
     files.forEach(fullpath=>{
         const ext = path.extname(fullpath)
         const name = path.basename(fullpath, ext)
         ffmpeg(fullpath)
-            .output(path.resolve('static', 'assets', 'sfx', name + '.ogg'))
-            // .on('end', ()=>{
-                // fs.copyFileSync(fullpath, path.resolve('public', 'media', name + ext))
-            // })
+            .output(path.resolve(dest, name + '.ogg'))
             .run()
     })
 }
-const sfx: string[] = findAudio(path.resolve(__dirname, 'resources', 'sfx'))
-convertAudio(sfx)
+convertAudio(findAudio(path.resolve('resources', 'music')), path.resolve('static', 'assets', 'music'))
+convertAudio(findAudio(path.resolve('resources', 'sfx')), path.resolve('static', 'assets', 'sfx'))

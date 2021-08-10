@@ -17,6 +17,7 @@ function timer(maxTime: number) {
     let handleEnd=false
     let handleInit=false
     let handleWarn=false
+    let paused=true
     let start=0
     let last=''
     const writeTime=(secs: number, lbl: GameObj) => {
@@ -26,11 +27,27 @@ function timer(maxTime: number) {
             last = str
         }
     }
+    const getTime = () => {
+        const t = start + maxTime - time()
+        return t>0 ? t : 0
+    }
     return {
+        getHurry: () => getTime()<60,
+        getTime,
+        pause() {
+            paused=true
+        },
+        unpause() {
+            paused=false
+        },
         start() {
             if( !start ) {
+                paused=false
                 start=time()
             }
+        },
+        started() {
+            return start>0
         },
         powerup(index: number) {
             if( index===POWERUPS.TIME ) {
@@ -39,9 +56,8 @@ function timer(maxTime: number) {
             }
         },
         update() {
-            if( start ) {
-                let t = start + maxTime - time()
-                if( t<0 ) t=0
+            if( start && !paused ) {
+                const t = getTime()
                 writeTime(t, this)
                 if( t<=WARN_TIME && !handleWarn ) {
                     handleWarn=true
