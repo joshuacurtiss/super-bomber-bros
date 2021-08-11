@@ -272,6 +272,8 @@ function spawnBomb(): boolean {
  * Spawns P-Bomb at the player's position.
  */
 function spawnPBomb() {
+    // Do not allow P-Bomb unless you have that ability
+    if( ! this.canPBomb() ) return 
     let i=0
     let success=true
     // Just keep spawning bombs until you get back a failure. It may be because you ran out of bombs or
