@@ -4,7 +4,7 @@ import { POWERUPS } from '../types'
 
 const {time} = k
 
-const WARN_TIME = 60
+const HURRY_TIME = 60
 
 function formatTime(secs: number): string {
     const part = Math.floor(secs % 1 * 10)
@@ -13,26 +13,22 @@ function formatTime(secs: number): string {
     return `${min}:${sec<10 ? '0' : ''}${sec}.${part}`
 }
 
-function timer(maxTime: number) {
+export default function(maxTime: number) {
     let handleEnd=false
     let handleInit=false
     let handleWarn=false
     let paused=true
     let start=0
     let last=''
-    const writeTime=(secs: number, lbl: GameObj) => {
-        const str = formatTime(secs)
-        if( last!== str ) {
-            lbl.text = str
-            last = str
-        }
-    }
     const getTime = () => {
         const t = start + maxTime - time()
         return t>0 ? t : 0
     }
+    const isHurry = (t=getTime()) => t<=HURRY_TIME
+    const isTimeUp = (t=getTime()) => t===0
     return {
-        getHurry: () => getTime()<60,
+        isHurry,
+        isTimeUp,
         getTime,
         pause() {
             paused=true
@@ -55,23 +51,28 @@ function timer(maxTime: number) {
                 debug('Sweet, you just increased game time by 30 sec!')
             }
         },
+        writeTime(secs: number) {
+            const str = formatTime(secs)
+            if( last!== str ) {
+                this.text = str
+                last = str
+            }
+        },
         update() {
             if( start && !paused ) {
                 const t = getTime()
-                writeTime(t, this)
-                if( t<=WARN_TIME && !handleWarn ) {
+                this.writeTime(t)
+                if( isHurry(t) && !handleWarn ) {
                     handleWarn=true
-                    this.trigger("timer_warning")
-                } else if( t===0 && !handleEnd ) {
+                    this.trigger("hurry_up")
+                } else if( isTimeUp(t) && !handleEnd ) {
                     handleEnd=true
-                    this.trigger("timer_end")
+                    this.trigger("time_up")
                 }
             } else if( !handleInit ) {
                 handleInit=true
-                writeTime(maxTime, this)
+                this.writeTime(maxTime)
             }
         }
     }
 }
-
-export default timer

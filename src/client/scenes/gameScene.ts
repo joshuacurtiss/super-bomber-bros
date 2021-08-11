@@ -4,8 +4,8 @@ import canDie from '../abilities/canDie'
 import canWalk from '../abilities/canWalk'
 import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
-import brick from '../model/Brick'
-import timer from '../model/Timer'
+import brickFeature from '../model/Brick'
+import timerFeature from '../model/Timer'
 import maps from '../maps.json'
 
 import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
@@ -81,7 +81,7 @@ export default async function (mapId=1) {
         pos: vec2(0, GRID_PIXEL_SIZE),
         scale: 2,
         '#': [sprite('block'), scale(2), solid(), 'block'],
-        'O': [sprite('brick'), scale(2), solid(), brick(), 'brick'],
+        'O': [sprite('brick'), scale(2), solid(), brickFeature(), 'brick'],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
@@ -95,12 +95,12 @@ export default async function (mapId=1) {
     // Header/Timer
     add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
     add([rect(MAP_WIDTH_PIXELS-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
-    const timerLabel = add([
+    const timer = add([
         text("", 16, {noArea}),
         pos(12, 9),
-        timer(DEFAULT_GAME_TIME),
+        timerFeature(DEFAULT_GAME_TIME),
     ]);
-    timerLabel.on('timer_warning', ()=>{
+    timer.on('hurry_up', ()=>{
         debug("Time's running out!")
         music.pause()
         play('hurryup')
@@ -154,25 +154,26 @@ export default async function (mapId=1) {
             })
         }
     })
-    timerLabel.on('timer_end', ()=>{
+    timer.on('time_up', ()=>{
+        music.stop()
         go('lose')
     })
 
     const startGame = () => {
-        if( !timerLabel.started() ) {
-            timerLabel.start()
+        if( !timer.started() ) {
+            timer.start()
             music = play('music-intro', {
                 volume,
-                detune: timerLabel.getHurry() ? MUSIC_HURRY_DETUNE : 0, 
-                speed: timerLabel.getHurry() ? MUSIC_HURRY_SPEED : 1
+                detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0, 
+                speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
             })
             wait(2.4, ()=>{
                 if( !music.paused() && player.isAlive() ) {
                     music = play('music', {
                         volume, 
                         loop: true, 
-                        detune: timerLabel.getHurry() ? MUSIC_HURRY_DETUNE : 0,
-                        speed: timerLabel.getHurry() ? MUSIC_HURRY_SPEED : 1
+                        detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0,
+                        speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
                     })
                 }
             })
@@ -196,7 +197,7 @@ export default async function (mapId=1) {
     })
     player.on('died', ()=>{
         music.stop()
-        timerLabel.pause()
+        timer.pause()
         wait(2, ()=>{
             go('lose')
         })
@@ -215,7 +216,7 @@ export default async function (mapId=1) {
         play('powerup')
         player.bombPowerup(powerup.frame)
         player.walkPowerup(powerup.frame)
-        timerLabel.powerup(powerup.frame)
+        timer.powerup(powerup.frame)
         destroy(powerup)
     })
 
