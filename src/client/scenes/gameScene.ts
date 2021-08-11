@@ -156,7 +156,7 @@ export default async function (mapId=1) {
     })
     timer.on('time_up', ()=>{
         music.stop()
-        go('lose')
+        go('timeup')
     })
 
     const startGame = () => {
