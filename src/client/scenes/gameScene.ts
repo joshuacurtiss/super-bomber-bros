@@ -183,10 +183,10 @@ export default async function (mapId=1) {
     // Player
     const {x: playerX, y: playerY} = convertMapPosToCoord(findMapItem(map, '1'))
     const player = add([
-        sprite('bomberman'),
-        pos(playerX-7, playerY-12),
-        scale(1.3),
-        area(vec2(8,10), vec2(26,34)),
+        sprite(choose(['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'wario'])),
+        pos(playerX, playerY),
+        scale(2),
+        area(vec2(2,2), vec2(14,16)),
         canBomb(),
         canDie(),
         canWalk(),

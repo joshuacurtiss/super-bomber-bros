@@ -10,7 +10,9 @@ loadSprite('title-bomberman', 'assets/title/title-bomberman.png')
 loadSprite('title-mario', 'assets/title/title-mario.png')
 
 // Characters
-loadSprite('bomberman', 'assets/characters/bomberman.png')
+for( const name of ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'wario'] ) {
+    loadSprite(name, `assets/characters/${name}.png`)
+}
 
 // SFX
 loadSound('hurryup', 'assets/sfx/smb3_hurry_up.ogg')
