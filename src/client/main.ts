@@ -5,10 +5,6 @@ const {
     loadSound, loadSprite, scene, start,
 } = k
 
-// Title
-loadSprite('title-bomberman', 'assets/title/title-bomberman.png')
-loadSprite('title-mario', 'assets/title/title-mario.png')
-
 // Characters
 for( const name of ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'wario'] ) {
     loadSprite(name, `assets/characters/${name}.png`)
@@ -26,6 +22,7 @@ loadSound('explosion', 'assets/sfx/smw2_explosion.ogg')
 loadSound('thud', 'assets/sfx/smw_thud.ogg')
 
 // Map
+loadSprite('gameover', 'assets/title/gameover.png')
 loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png', {gridWidth: 16, gridHeight: 16, anims: {explode: {from: 1, to: 6}}})
 loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})
