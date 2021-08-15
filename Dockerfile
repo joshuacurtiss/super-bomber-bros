@@ -1,8 +1,8 @@
-FROM node:12-alpine
+FROM node:16-alpine
 WORKDIR /var/app
-COPY package.json yarn.lock ./
-RUN yarn install --prod
+COPY package.json package-lock.json ./
+RUN npm install --production
 ADD dist dist/
 ADD src src/
 EXPOSE 8000
-CMD ["yarn", "serve"]
+CMD ["npm", "run", "serve"]
