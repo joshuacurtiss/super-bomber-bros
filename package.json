@@ -9,7 +9,7 @@
     "clean": "rimraf static/assets/**/*.ogg",
     "pack": "ts-node pack",
     "server": "ts-node --project server/tsconfig.json server/src",
-		"serverdev": "ts-node-dev --project server/tsconfig.json --watch server/src server/src",
+    "serverdev": "ts-node-dev --project server/tsconfig.json --watch server/src server/src",
     "start": "npm run pack && parcel client/src/index.html -p 8000",
     "build": "npm run clean && npm run pack && npm run bundle",
     "bundle": "parcel build --public-url '.' client/src/index.html --out-dir dist",
@@ -18,9 +18,11 @@
   },
   "dependencies": {
     "@types/express": "^4.17.13",
+    "@types/ws": "^7.4.7",
     "express": "^4.17.1",
     "kaboom": "^0.5.1",
-    "ts-node": "^10.1.0"
+    "ts-node": "^10.1.0",
+    "ws": "^8.1.0"
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.18",
