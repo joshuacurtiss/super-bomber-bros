@@ -5,4 +5,4 @@ RUN npm install --production
 ADD dist dist/
 ADD server server/
 EXPOSE 8000
-CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "server"]

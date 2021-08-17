@@ -8,7 +8,8 @@
   "scripts": {
     "clean": "rimraf static/assets/**/*.ogg",
     "pack": "ts-node pack",
-    "serve": "ts-node server/src",
+    "server": "ts-node --project server/tsconfig.json server/src",
+		"serverdev": "ts-node-dev --project server/tsconfig.json --watch server/src server/src",
     "start": "npm run pack && parcel client/src/index.html -p 8000",
     "build": "npm run clean && npm run pack && npm run bundle",
     "bundle": "parcel build --public-url '.' client/src/index.html --out-dir dist",
@@ -29,6 +30,7 @@
     "parcel-plugin-clean-easy": "^1.0.2",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "rimraf": "^3.0.2",
+    "ts-node-dev": "^1.1.8",
     "typescript": "^4.3.5"
   },
   "alias": {
