@@ -3,6 +3,6 @@ WORKDIR /var/app
 COPY package.json package-lock.json ./
 RUN npm install --production
 ADD dist dist/
-ADD src src/
+ADD server server/
 EXPOSE 8000
 CMD ["npm", "run", "serve"]

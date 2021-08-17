@@ -8,12 +8,12 @@
   "scripts": {
     "clean": "rimraf static/assets/**/*.ogg",
     "pack": "ts-node pack",
-    "serve": "ts-node src/server",
-    "start": "npm run pack && parcel src/client/index.html -p 8000",
+    "serve": "ts-node server/src",
+    "start": "npm run pack && parcel client/src/index.html -p 8000",
     "build": "npm run clean && npm run pack && npm run bundle",
-    "bundle": "parcel build --public-url '.' src/client/index.html --out-dir dist",
+    "bundle": "parcel build --public-url '.' client/src/index.html --out-dir dist",
     "build:docker": "docker build . -t joshuacurtiss/super-bomber-bros",
-    "watch": "npm run pack && parcel watch src/client/index.html --out-dir dist"
+    "watch": "npm run pack && parcel watch client/src/index.html --out-dir dist"
   },
   "dependencies": {
     "@types/express": "^4.17.13",
