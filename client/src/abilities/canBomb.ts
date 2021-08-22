@@ -1,4 +1,5 @@
-import {k, debug} from '../kaboom'
+import { CMDS } from '../model/Network'
+import {k, debug, network} from '../kaboom'
 import {getAtPos, snapToGrid} from '../util'
 import {LEFT, RIGHT, UP, DOWN, IDLE, GRID_PIXEL_SIZE, POWERUPS, BOMB_SPEED} from '../types'
 import {Vec2} from 'kaboom'
@@ -125,6 +126,7 @@ function canBomb() {
             const area1 = vec2(-14,-14)
             const area2 = vec2(14,14)
             const expPos = snapToGrid(this.pos).add(vec2(GRID_PIXEL_SIZE/2, GRID_PIXEL_SIZE/2))
+            network.send(CMDS.BOMB_EXPLODE, expPos)
             const expOrigin = add([
                 sprite('explosion'),
                 scale(EXP_SCALE),
@@ -256,6 +258,7 @@ function spawnBombAtPos(position: Vec2): boolean {
     ])
     bomb.play('bomb')
     this.incBombCnt()
+    network.send(CMDS.BOMB_SPAWN, snappedPosition)
     return true
 }
 

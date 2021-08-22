@@ -13,8 +13,12 @@ app.use(express.json());
 app.use('/', express.static(path.join(__dirname, '..', '..', 'dist')));
 
 wss.on('connection', (ws: WebSocket) => {
-    ws.on('message', function message(msg) {
-        console.log(`Received message ${msg}`);
+    ws.on('message', function message(msg: string) {
+        wss.clients.forEach(function each(client) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(msg, {binary: false});
+            }
+        });
     });
 })
 

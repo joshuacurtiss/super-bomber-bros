@@ -33,7 +33,8 @@ export default async function () {
     // URL 
     const params = new URLSearchParams(location.search)
     const level = params.get('level')==null ? 1 : params.get('level')
+    const mp = params.get('mp')==='true' ? true : false
     keyPress('space', ()=>{
-        go('game', level)
+        go('game', level, mp)
     })
 }

@@ -1,4 +1,4 @@
-import {k, debug} from '../kaboom'
+import {k, debug, network} from '../kaboom'
 import canBomb from '../abilities/canBomb'
 import canDie from '../abilities/canDie'
 import canWalk from '../abilities/canWalk'
@@ -57,11 +57,14 @@ const {
     wait,
 } = k
 
-export default async function (mapId=1) {
+export default async function (mapId=1, mp=false) {
 
     const map=maps[mapId]
     const volume=0.25
     let music
+
+    // Networking
+    network.enabled = mp
 
     // Music
     const musicPrefix = choose(['mb', 'mp'])

@@ -1,4 +1,5 @@
 import kaboom from 'kaboom'
+import Network from './model/Network'
 
 const debugMode = location.search.toLowerCase().indexOf("debug")>0
 
@@ -9,6 +10,7 @@ export const k = kaboom({
     height: 240,
     scale: 1.5,
     debug: debugMode,
+    connect: location.protocol.replace('http', 'ws') +  "/" + "/" + location.host,
 })
 
 if( debugMode ) {
@@ -18,5 +20,7 @@ if( debugMode ) {
 export function debug(msg: string) {
     if( debugMode ) k.debug.log(msg)
 }
+
+export const network = new Network(k)
 
 export default k

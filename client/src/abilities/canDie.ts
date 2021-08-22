@@ -1,5 +1,6 @@
 import { Vec2 } from 'kaboom'
-import k from '../kaboom'
+import { CMDS } from '../model/Network'
+import { k, network } from '../kaboom'
 
 const {
     destroy,
@@ -16,6 +17,7 @@ export default function() {
             dead=true
             play('die')
             this.trigger('died')
+            network.send(CMDS.PLAYER_DIE)
             destroy(this)
         },
     }

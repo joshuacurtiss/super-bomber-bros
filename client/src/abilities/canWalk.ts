@@ -1,6 +1,8 @@
 import { Vec2 } from 'kaboom'
-import { k, debug } from '../kaboom'
+import { CMDS } from '../model/Network'
 import { POWERUPS, WALK_SPEED } from '../types'
+import { vec2floor } from '../util'
+import { k, debug, network } from '../kaboom'
 
 const {
     time,
@@ -18,11 +20,20 @@ function canWalk(speed: number = WALK_SPEED) {
         getDir: ()=>dir,
         stop() {
             walking=false
+            network.send(CMDS.PLAYER_STOP)
         },
         walk(direction: Vec2) {
             walking=true
             dir=direction
             this.move(dir.scale(speed*multiplier))
+            const roundedPos = vec2floor(this.pos)
+            network.send(CMDS.PLAYER_MOVE, [
+                roundedPos.x,
+                roundedPos.y,
+                dir.x,
+                dir.y,
+                walking,
+            ])
         },
         walkPowerup(index: number) {
             if( index===POWERUPS.SPEED ) {
