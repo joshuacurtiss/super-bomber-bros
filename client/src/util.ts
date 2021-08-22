@@ -69,10 +69,20 @@ function convertMapPosToCoord(pos:Vec2): Vec2 {
     )
 }
 
+/**
+ * Receives a position and executes Math.floor() on both x and y.
+ * @param pos Position to adjust.
+ */
+function vec2floor(pos:Vec2) {
+    const {x, y} = pos
+    return vec2(Math.floor(x), Math.floor(y))
+}
+
 export {
     convertMapPosToCoord,
     findMapItems,
     findMapItem,
     getAtPos,
     snapToGrid,
+    vec2floor,
 }
