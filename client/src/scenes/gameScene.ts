@@ -6,7 +6,7 @@ import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
 import brickFeature from '../features/brick'
 import timerFeature from '../features/timer'
-import maps from '../maps.json'
+import maps from '../maps/campaign.json'
 
 import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
 import {
