@@ -83,11 +83,15 @@ function canBomb() {
     let timer = 3
     return {
         update() {
-            // Check if bomb should explode
             timer-=dt()
             if( timer<0 ) {
+                // Bomb should explode when timer passes zero
                 play('explosion')
                 this.explode()
+            } else if( timer<=1 && (!this.moving || this.moving.eq(IDLE)) ) {
+                // If less than 1 sec and no motion, shake the bomb ever so slightly
+                const diff = Math.floor((timer % 1) * 10) % 2 === 0
+                this.scale = 2 + (diff ? 0.05 : 0)
             }
             // Move bomb
             if( this.moving && !this.moving.eq(IDLE) ) {
