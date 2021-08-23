@@ -1,6 +1,7 @@
 import {k, debug, network} from '../kaboom'
 import canBomb from '../abilities/canBomb'
 import canDie from '../abilities/canDie'
+import canScore from '../abilities/canScore'
 import canWalk from '../abilities/canWalk'
 import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
@@ -35,6 +36,7 @@ const {
     area,
     choose,
     destroy,
+    every,
     go, 
     gravity,
     keyDown, 
@@ -43,6 +45,7 @@ const {
     layer,
     layers, 
     loadSound,
+    origin,
     overlaps,
     play,
     pos, 
@@ -85,6 +88,9 @@ export default async function (mapId=1, mp=false) {
         scale: 2,
         '#': [sprite('block'), scale(2), solid(), 'block'],
         'O': [sprite('brick'), scale(2), solid(), brickFeature(), 'brick'],
+        '¢': [sprite('coin', {animSpeed: 0.2, frame: 0}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-10'],
+        '$': [sprite('coin', {animSpeed: 0.2, frame: 4}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-30'],
+        '£': [sprite('coin', {animSpeed: 0.2, frame: 8}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-50'],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
@@ -94,8 +100,10 @@ export default async function (mapId=1, mp=false) {
         GREEN,
         layer('bg'),
     ])
+    const coinAmts = [10, 30, 50]
+    coinAmts.forEach(amt=>every(`coin-${amt}`, coin=>coin.play(`coin-${amt}`)))
 
-    // Header/Timer
+    // Header/Score/Timer
     add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
     add([rect(MAP_WIDTH_PIXELS-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
     const timer = add([
@@ -103,6 +111,11 @@ export default async function (mapId=1, mp=false) {
         pos(12, 9),
         timerFeature(DEFAULT_GAME_TIME),
     ]);
+    const score = add([
+        text('', 16, {noArea}),
+        pos(MAP_WIDTH_PIXELS-10, 9),
+        origin('topright'),
+    ])
     timer.on('hurry_up', ()=>{
         debug("Time's running out!")
         music.pause()
@@ -192,6 +205,7 @@ export default async function (mapId=1, mp=false) {
         area(vec2(2,2), vec2(14,16)),
         canBomb(),
         canDie(),
+        canScore(),
         canWalk(),
         'player',
     ])
@@ -205,6 +219,11 @@ export default async function (mapId=1, mp=false) {
             go('lose')
         })
     })
+    const updateHeaderScore = () => {
+        score.text = `Score: ${player.getScore().toLocaleString()}`
+    }
+    updateHeaderScore()
+    player.on('score_changed', updateHeaderScore)
     overlaps('bomb', 'player', (bomb, player)=>{
         if( bomb.solid ) player.kickBomb(bomb)
     })
@@ -214,6 +233,13 @@ export default async function (mapId=1, mp=false) {
     overlaps('enemy', 'player', (enemy, player)=>{
         player.die()
         destroy(enemy)
+    })
+    overlaps('coin', 'player', (coin, player)=>{
+        play('coin')
+        if( coin.is('coin-10') ) player.incScore(10)
+        else if( coin.is('coin-30') ) player.incScore(30)
+        else if( coin.is('coin-50') ) player.incScore(50)
+        destroy(coin)
     })
     overlaps('powerup', 'player', (powerup, player)=>{
         play('powerup')

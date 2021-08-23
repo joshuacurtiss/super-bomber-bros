@@ -11,6 +11,7 @@ for( const name of ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad'
 }
 
 // SFX
+loadSound('coin', 'assets/sfx/smw2_coin.ogg')
 loadSound('hurryup', 'assets/sfx/smb3_hurry_up.ogg')
 loadSound('die', 'assets/sfx/smb3_player_down.ogg')
 loadSound('bullet', 'assets/sfx/smb3_thwomp.ogg')
@@ -27,6 +28,15 @@ loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png', {gridWidth: 16, gridHeight: 16, anims: {explode: {from: 1, to: 6}}})
 loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})
 loadSprite('bullet', 'assets/enemies/bullet.png')
+loadSprite('coin', 'assets/map/coin.png', {
+    gridWidth: 32,
+    gridHeight: 32,
+    anims: {
+        'coin-10': {from:0, to: 3},
+        'coin-30': {from:4, to: 7},
+        'coin-50': {from:8, to: 11},
+    },
+})
 loadSprite('explosion', 'assets/map/explosion.png', {
     gridWidth: 48,
     gridHeight: 48,
