@@ -9,7 +9,7 @@ import brickFeature from '../features/brick'
 import timerFeature from '../features/timer'
 import maps from '../maps/campaign.json'
 
-import {convertMapPosToCoord, findMapItem, getAtPos} from '../util'
+import {convertMapPosToCoord, findMapItem, findMapItems, getAtPos} from '../util'
 import {
     DIRS,
     GRID_PIXEL_SIZE,
@@ -88,9 +88,6 @@ export default async function (mapId=1, mp=false) {
         scale: 2,
         '#': [sprite('block'), scale(2), solid(), 'block'],
         'O': [sprite('brick'), scale(2), solid(), brickFeature(), 'brick'],
-        '¢': [sprite('coin', {animSpeed: 0.2, frame: 0}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-10'],
-        '$': [sprite('coin', {animSpeed: 0.2, frame: 4}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-30'],
-        '£': [sprite('coin', {animSpeed: 0.2, frame: 8}), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-50'],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
@@ -100,8 +97,16 @@ export default async function (mapId=1, mp=false) {
         GREEN,
         layer('bg'),
     ])
-    const coinAmts = [10, 30, 50]
-    coinAmts.forEach(amt=>every(`coin-${amt}`, coin=>coin.play(`coin-${amt}`)))
+    const coins = [
+        ...findMapItems(map, '¢').map(coin=>add([sprite('coin', {animSpeed: 0.2, frame: 0}), pos(convertMapPosToCoord(coin)), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-10'])),
+        ...findMapItems(map, '$').map(coin=>add([sprite('coin', {animSpeed: 0.2, frame: 4}), pos(convertMapPosToCoord(coin)), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-30'])),
+        ...findMapItems(map, '£').map(coin=>add([sprite('coin', {animSpeed: 0.2, frame: 8}), pos(convertMapPosToCoord(coin)), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-50'])),
+    ]
+    coins.forEach(coin=>{
+        const coinAmts = ['coin-10', 'coin-30', 'coin-50']
+        const which = coinAmts.find(tag=>coin.is(tag))
+        if( which ) coin.play(which)
+    })
 
     // Header/Score/Timer
     add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
