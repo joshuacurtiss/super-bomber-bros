@@ -22,7 +22,8 @@ export default function() {
         sprite('bullet'),
         scale(dir, 1),
         pos(dir===1 ? -GRID_PIXEL_SIZE*3 : width()+GRID_PIXEL_SIZE, Math.floor(rand(0, MAP_HEIGHT_PIXELS-GRID_PIXEL_SIZE))),
-        'enemy',
+        'hazard',
+        'can-hurt-player',
     ])
     bullet.action(()=>{
         bullet.move(125 * bullet.scale.x,0)

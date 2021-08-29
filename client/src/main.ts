@@ -47,6 +47,7 @@ loadSprite('explosion', 'assets/map/explosion.png', {
     },
 })
 loadSprite('fish', 'assets/enemies/fish.png', {gridWidth: 21, gridHeight: 18, anims: {fish: {from: 0, to: 1}}})
+loadSprite('goomba', 'assets/enemies/goomba.png', {gridWidth: 16, gridHeight: 16, anims: {walk: {from: 0, to: 1}}})
 loadSprite('powerups', 'assets/map/powerups.png', {gridWidth: 16, gridHeight: 16})
 
 // Scenes

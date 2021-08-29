@@ -3,6 +3,7 @@ import canBomb from '../abilities/canBomb'
 import canDie from '../abilities/canDie'
 import canScore from '../abilities/canScore'
 import canWalk from '../abilities/canWalk'
+import enemy from '../abilities/enemy'
 import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
 import brickFeature from '../features/brick'
@@ -86,8 +87,8 @@ export default async function (mapId=1, mp=false) {
         height: GRID_PIXEL_SIZE,
         pos: vec2(0, GRID_PIXEL_SIZE),
         scale: 2,
-        '#': [sprite('block'), scale(2), solid(), 'block'],
-        'O': [sprite('brick'), scale(2), solid(), brickFeature(), 'brick'],
+        '#': [sprite('block'), scale(2), solid(), 'solid', 'block'],
+        'O': [sprite('brick'), scale(2), solid(), brickFeature(), 'solid', 'brick'],
         any: (ch) => null,
     }
     addLevel(map, mapConfig)
@@ -97,6 +98,8 @@ export default async function (mapId=1, mp=false) {
         GREEN,
         layer('bg'),
     ])
+
+    // Coins
     const coins = [
         ...findMapItems(map, '¢').map(coin=>add([sprite('coin', {animSpeed: 0.2, frame: 0}), pos(convertMapPosToCoord(coin)), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-10'])),
         ...findMapItems(map, '$').map(coin=>add([sprite('coin', {animSpeed: 0.2, frame: 4}), pos(convertMapPosToCoord(coin)), area(vec2(4,4), vec2(28,28)), 'coin', 'coin-30'])),
@@ -105,7 +108,17 @@ export default async function (mapId=1, mp=false) {
     coins.forEach(coin=>{
         const coinAmts = ['coin-10', 'coin-30', 'coin-50']
         const which = coinAmts.find(tag=>coin.is(tag))
+        coin.paused=true
         if( which ) coin.play(which)
+    })
+
+    // Enemies
+    const enemies = [
+        ...findMapItems(map, 'g').map(e=>add([sprite('goomba', {animSpeed: 0.5}), enemy(), scale(2), pos(convertMapPosToCoord(e)), area(vec2(2,2), vec2(14,14)), 'can-get-hurt', 'can-hurt-player', 'enemy'])),
+    ]
+    enemies.forEach(enemy=>{
+        enemy.play('walk')
+        enemy.paused=true
     })
 
     // Header/Score/Timer
@@ -188,6 +201,7 @@ export default async function (mapId=1, mp=false) {
                 detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0, 
                 speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
             })
+            Array(...coins, ...enemies).forEach(item=>item.paused=false)
             wait(2.4, ()=>{
                 if( !music.paused() && player.isAlive() ) {
                     music = play('music', {
@@ -212,6 +226,7 @@ export default async function (mapId=1, mp=false) {
         canDie(),
         canScore(),
         canWalk(),
+        'can-get-hurt',
         'player',
     ])
     player.action(() => {
@@ -232,12 +247,11 @@ export default async function (mapId=1, mp=false) {
     overlaps('bomb', 'player', (bomb, player)=>{
         if( bomb.solid ) player.kickBomb(bomb)
     })
-    overlaps('explosion', 'player', (exp, player)=>{
-        player.die()
+    overlaps('explosion', 'can-get-hurt', (_, obj)=>{
+        obj.die()
     })
-    overlaps('enemy', 'player', (enemy, player)=>{
+    overlaps('can-hurt-player', 'player', (_, player)=>{
         player.die()
-        destroy(enemy)
     })
     overlaps('coin', 'player', (coin, player)=>{
         play('coin')
@@ -264,15 +278,16 @@ export default async function (mapId=1, mp=false) {
             b.pos=b.targ
             // Remove the 'fallingblock' tag so it will stop falling.
             b.rmTag('fallingblock')
-            // Find everything under the block. Kill players, remove bombs, just destroy everything else that is tagged
+            // Find everything under the block. Kill players/enemies, remove bombs, just destroy everything else that is tagged
             getAtPos(b.targ).forEach(obj=>{
-                if( obj.is("player") ) obj.die()
+                if( obj.is("can-get-hurt") ) obj.die()
                 else if( obj.is("bomb") ) obj.explode()
                 else if( obj._tags.length ) destroy(obj)
             })
             // Finally, make the block solid so can't walk thru
             b.use(solid())
             b.use('block')
+            b.use('solid')
         }
     })
 

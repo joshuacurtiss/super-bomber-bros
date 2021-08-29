@@ -24,6 +24,7 @@ export const DIRS = {IDLE, LEFT, RIGHT, UP, DOWN}
 
 export const BOMB_SPEED = 175
 export const WALK_SPEED = 120
+export const ENEMY_SPEED = 60
 
 export const MUSIC_HURRY_SPEED = 1.5
 export const MUSIC_HURRY_DETUNE = -600

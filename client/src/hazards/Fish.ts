@@ -29,7 +29,8 @@ export default function() {
         layer('ui'),
         pos(x, y),
         body({jumpForce}),
-        'enemy',
+        'hazard',
+        'can-hurt-player',
     ])
     fish.play('fish')
     fish.jump()
