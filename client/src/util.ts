@@ -1,5 +1,5 @@
 import {k} from './kaboom'
-import {Vec2} from 'kaboom'
+import {GameObj, Vec2} from 'kaboom'
 import {GRID_PIXEL_SIZE} from './types'
 
 const {get, vec2} = k
@@ -16,6 +16,10 @@ function getAtPos(position:Vec2, tag?:string) {
         if( !obj.pos ) return false
         return x>=obj.pos.x && x<=obj.pos.x+obj.width && y>=obj.pos.y && y<=obj.pos.y+obj.height
     })
+}
+
+function getOverlapped(target:GameObj, tag?:string) {
+    return get(tag).filter(obj=>obj.area && obj.isOverlapped(target))
 }
 
 /**
@@ -83,6 +87,7 @@ export {
     findMapItems,
     findMapItem,
     getAtPos,
+    getOverlapped,
     snapToGrid,
     vec2floor,
 }

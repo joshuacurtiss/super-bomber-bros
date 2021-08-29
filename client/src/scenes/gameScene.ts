@@ -10,7 +10,7 @@ import brickFeature from '../features/brick'
 import timerFeature from '../features/timer'
 import maps from '../maps/campaign.json'
 
-import {convertMapPosToCoord, findMapItem, findMapItems, getAtPos} from '../util'
+import {convertMapPosToCoord, findMapItem, findMapItems, getOverlapped} from '../util'
 import {
     DIRS,
     GRID_PIXEL_SIZE,
@@ -279,7 +279,7 @@ export default async function (mapId=1, mp=false) {
             // Remove the 'fallingblock' tag so it will stop falling.
             b.rmTag('fallingblock')
             // Find everything under the block. Kill players/enemies, remove bombs, just destroy everything else that is tagged
-            getAtPos(b.targ).forEach(obj=>{
+            getOverlapped(b).forEach(obj=>{
                 if( obj.is("can-get-hurt") ) obj.die()
                 else if( obj.is("bomb") ) obj.explode()
                 else if( obj._tags.length && ! obj.is("hazard") ) destroy(obj)
