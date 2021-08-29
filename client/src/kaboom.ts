@@ -1,7 +1,9 @@
 import kaboom from 'kaboom'
 import Network from './model/Network'
 
-const debugMode = location.search.toLowerCase().indexOf("debug")>0
+const params = new URLSearchParams(location.search)
+const mp = params.get('mp')==='true' ? true : false
+const debugMode = params.has('debug')
 
 export const k = kaboom({
     clearColor: [0, 0, 0, 1],
@@ -10,7 +12,7 @@ export const k = kaboom({
     height: 240,
     scale: 1.5,
     debug: debugMode,
-    connect: location.protocol.replace('http', 'ws') +  "/" + "/" + location.host,
+    connect: mp ? location.protocol.replace('http', 'ws') +  "/" + "/" + location.host : null,
 })
 
 if( debugMode ) {
