@@ -26,17 +26,19 @@ export default function() {
     const fish = add([
         sprite('fish'),
         scale(dir*2, 2),
+        // Added to 'ui' layer so he doesn't bump into things since he has a `body()` for the jump physics
         layer('ui'),
         pos(x, y),
         body({jumpForce}),
         'hazard',
-        'can-hurt-player',
     ])
     fish.play('fish')
     fish.jump()
     fish.action(()=>{
         fish.move(horizForce,0)
         if( fish.pos.y <= y ) {
+            // We have to explicitly test for collisions at the fish's position since he is placed on a separate layer
+            // so that he doesn't bump into things since he has a body for jump physics.
             getAtPos(fish.pos, 'player').forEach(obj=>{
                 obj.die()
                 destroy(fish)
