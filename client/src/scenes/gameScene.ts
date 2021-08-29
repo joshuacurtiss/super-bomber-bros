@@ -282,7 +282,7 @@ export default async function (mapId=1, mp=false) {
             getAtPos(b.targ).forEach(obj=>{
                 if( obj.is("can-get-hurt") ) obj.die()
                 else if( obj.is("bomb") ) obj.explode()
-                else if( obj._tags.length ) destroy(obj)
+                else if( obj._tags.length && ! obj.is("hazard") ) destroy(obj)
             })
             // Finally, make the block solid so can't walk thru
             b.use(solid())
