@@ -11,6 +11,7 @@ export const MAP_HEIGHT_PIXELS = MAP_HEIGHT * GRID_PIXEL_SIZE
 export const WHITE = color(1, 1, 1)
 export const BLUE = color(0.39, 0.47, 0.937)
 export const GREEN = color(0.223, 0.517, 0)
+export const YELLOW = color(1, 1, 0)
 
 export const COLORS = {WHITE, BLUE, GREEN}
 

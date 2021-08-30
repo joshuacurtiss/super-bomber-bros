@@ -72,8 +72,10 @@ export default async function (mapId=1, mp=false) {
 
     // Music
     const musicPrefix = choose(['mb', 'mp'])
-    await loadSound('music-intro', `assets/music/${musicPrefix}i.ogg`)
-    await loadSound('music', `assets/music/${musicPrefix}.ogg`)
+    await Promise.all([
+        loadSound('music-intro', `assets/music/${musicPrefix}i.ogg`),
+        loadSound('music', `assets/music/${musicPrefix}.ogg`),
+    ])
 
     // Layers
     layers(['bg', 'obj', 'ui'], 'obj')
@@ -108,7 +110,6 @@ export default async function (mapId=1, mp=false) {
     coins.forEach(coin=>{
         const coinAmts = ['coin-10', 'coin-30', 'coin-50']
         const which = coinAmts.find(tag=>coin.is(tag))
-        coin.paused=true
         if( which ) coin.play(which)
     })
 
@@ -118,7 +119,6 @@ export default async function (mapId=1, mp=false) {
     ]
     enemies.forEach(enemy=>{
         enemy.play('walk')
-        enemy.paused=true
     })
 
     // Header/Score/Timer
@@ -201,7 +201,6 @@ export default async function (mapId=1, mp=false) {
                 detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0, 
                 speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
             })
-            Array(...coins, ...enemies).forEach(item=>item.paused=false)
             wait(2.4, ()=>{
                 if( !music.paused() && player.isAlive() ) {
                     music = play('music', {
@@ -296,7 +295,6 @@ export default async function (mapId=1, mp=false) {
     let lastSpacePos=vec2(0, 0)
     // Space and Double-space for bombs and P-Bombs
     keyPress('space', ()=>{
-        startGame()
         const t = time()
         const p = player.pos.clone()
         // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
@@ -311,7 +309,6 @@ export default async function (mapId=1, mp=false) {
     })
     Object.entries(DIRS).forEach(([dir, vec])=>{
         keyDown(dir.toLowerCase(), ()=>{
-            startGame()
             player.walk(vec)
         })
         keyRelease(dir, player.stop)
@@ -319,4 +316,7 @@ export default async function (mapId=1, mp=false) {
 
     // Debugging
     k.debug.clearLog()
+
+    // Start
+    startGame()
 }

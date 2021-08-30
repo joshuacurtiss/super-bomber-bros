@@ -1,5 +1,5 @@
 import k from './kaboom'
-import {gameScene, loseScene, startScene, timeupScene} from './scenes'
+import {gameScene, loseScene, prefScene, startScene, startMpScene, startSingleScene, timeupScene} from './scenes'
 
 const {
     loadSound, loadSprite, scene, start,
@@ -21,6 +21,10 @@ loadSound('powerupappears', 'assets/sfx/smw_power-up_appears.ogg')
 loadSound('powerup', 'assets/sfx/smw_power-up.ogg')
 loadSound('explosion', 'assets/sfx/smw2_explosion.ogg')
 loadSound('thud', 'assets/sfx/smw_thud.ogg')
+
+// Menu Music and Graphics
+Array('super', 'bomber', 'bros', 'mushroom').forEach(img=>loadSprite(`title-${img}`, `assets/title/${img}.png`))
+Array(1,2,3,4).map(i=>loadSound(`menu-${i}`, `assets/music/menu-${i}.ogg`))
 
 // Map
 loadSprite('gameover', 'assets/title/gameover.png')
@@ -51,7 +55,10 @@ loadSprite('goomba', 'assets/enemies/goomba.png', {gridWidth: 16, gridHeight: 16
 loadSprite('powerups', 'assets/map/powerups.png', {gridWidth: 16, gridHeight: 16})
 
 // Scenes
+scene('pref', prefScene)
 scene('start', startScene)
+scene('startMp', startMpScene)
+scene('startSingle', startSingleScene)
 scene('lose', loseScene)
 scene('game', gameScene)
 scene('timeup', timeupScene)
