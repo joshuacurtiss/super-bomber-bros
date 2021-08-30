@@ -31,6 +31,7 @@ loadSprite('gameover', 'assets/title/gameover.png')
 loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png', {gridWidth: 16, gridHeight: 16, anims: {explode: {from: 1, to: 6}}})
 loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})
+loadSprite('smoke', 'assets/map/smoke.png', {gridWidth: 16, gridHeight: 16, anims: {smoke: {from: 0, to: 7}}})
 loadSprite('bullet', 'assets/enemies/bullet.png')
 loadSprite('coin', 'assets/map/coin.png', {
     gridWidth: 32,

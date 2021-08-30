@@ -4,11 +4,16 @@ import { getAtPos } from '../util'
 import { Vec2 } from 'kaboom'
 
 const {
+    add,
     choose,
     destroy,
+    pos,
     rand,
     randSeed,
+    scale,
+    sprite,
     vec2,
+    wait,
 } = k
 
 const DIRS = [LEFT, RIGHT, UP, DOWN]
@@ -44,6 +49,13 @@ export default function (speed: number = ENEMY_SPEED) {
             if (attempts>=attemptThreshold ) dir=IDLE
         },
         die() {
+            const smoke = add([
+                sprite('smoke', {noArea: true}),
+                scale(2),
+                pos(this.pos),
+            ])
+            smoke.play('smoke')
+            wait(0.8, ()=>destroy(smoke))
             destroy(this)
         },
         add() {
