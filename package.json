@@ -6,7 +6,7 @@
   "author": "Josh Curtiss <josh@curtiss.me>",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf static/assets/**/*.ogg",
+    "clean": "rimraf static/assets/**/*.ogg docs",
     "pack": "ts-node pack",
     "server": "ts-node --project server/tsconfig.json server/src",
     "serverdev": "ts-node-dev --project server/tsconfig.json --watch server/src server/src",
