@@ -99,10 +99,9 @@ function canBomb() {
                 const chkPosOffset = x+y<0 ? 0.5 : 1.1 
                 const items=getAtPos(this.pos.add(this.moving.scale(GRID_PIXEL_SIZE*chkPosOffset)))
                 const hasBlocker = items.some(item=>{
-                    if( item.is('block') ) return true
-                    if( item.is('brick') ) return true
-                    if( item.is('bomb') ) return true
+                    if( item.is('solid') ) return true
                     if( item.is('player') ) return true
+                    if( item.is('enemy') ) return true
                     // If bomb slides over a powerup, just destroy it
                     if( item.is('powerup') ) destroy(item)
                 })
@@ -118,6 +117,7 @@ function canBomb() {
                 const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
                 const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
                 this.solid = playerCenter.dist(bombCenter) > 30
+                this.use('solid')
             }
         },
         remove() {
