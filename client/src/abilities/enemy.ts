@@ -6,6 +6,7 @@ import { Vec2 } from 'kaboom'
 const {
     choose,
     destroy,
+    rand,
     randSeed,
     vec2,
 } = k
@@ -22,17 +23,24 @@ export default function (speed: number = ENEMY_SPEED) {
     randSeed(Date.now())
     let dir=randomDir()
     return {
+        /**
+         * Will look in the direction of the object and see if its clear for going that direction.
+         */
+        checkMapToMy(dir:Vec2):boolean {
+            // When determining your point for grid checking, adjust for sprite boundary area and its scale
+            const point = this.pos.add(this.area.p1.scale(this.scale.x, this.scale.y))
+            // Check the grid spot one step over in the dir, for any solid objects
+            return getAtPos(point.add(dir.scale(GRID_PIXEL_SIZE)), 'solid').length===0
+        },
+        /**
+         * Randomizes the direction but only a direction it can actually go. If he can't move, he'll give up and sit there.
+         */
         randomizeDir() {
             const attemptThreshold = 50
             let attempts = 0
-            let nextStep
             do {
                 dir = randomDir()
-                // When determining your point for grid checking, adjust for sprite boundary area and its scale
-                const point = this.pos.add(this.area.p1.scale(this.scale.x, this.scale.y))
-                // Check the grid spot one step over in the dir, for any solid objects
-                nextStep = getAtPos(point.add(dir.scale(GRID_PIXEL_SIZE)), 'solid')
-            } while( nextStep.length && attempts++ < attemptThreshold ) ;
+            } while( !this.checkMapToMy(dir) && attempts++ < attemptThreshold ) ;
             if (attempts>=attemptThreshold ) dir=IDLE
         },
         die() {
@@ -47,6 +55,24 @@ export default function (speed: number = ENEMY_SPEED) {
             })
         },
         update() {
+            // If he's right at a turning point, he'll consider turning
+            Array('x', 'y').some(ax=>{
+                if( 
+                    // If your current direction is on this axis (either -1 or 1)...
+                    dir[ax] && 
+                    // And you are right at the turning point (on the snap line)...
+                    Math.round(this.pos[ax]) % GRID_PIXEL_SIZE===0 &&
+                    // And the two directions of your opposite axis are open...
+                    (this.checkMapToMy(ax==='x' ? UP : LEFT) || this.checkMapToMy(ax==='x' ? DOWN : RIGHT)) && 
+                    // And some randomness...
+                    rand()<0.4
+                ) {
+                    // Then go ahead and randomly choose another direction.
+                    this.randomizeDir()
+                    // By returning true, 'y' axis won't run if 'x' axis returned true, because we looped with `some()`
+                    return true
+                }
+            })
             // Help him walk toward snap line
             let diff = vec2(0,0)
             Array('x', 'y').forEach(ax=>{
