@@ -28,6 +28,6 @@ export default function () {
     ])
     keyPress('space', ()=>{
         music.stop()
-        go('start', 2)
+        go('mainMenu', 2)
     })
 }

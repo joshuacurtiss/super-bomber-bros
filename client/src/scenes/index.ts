@@ -1,5 +1,6 @@
 import gameScene from './gameScene'
 import loseScene from './loseScene'
+import mainMenuScene from './mainMenuScene'
 import prefScene from './prefScene'
 import startScene from './startScene'
 import startMpScene from './startMpScene'
@@ -9,6 +10,7 @@ import timeupScene from './timeupScene'
 export {
     gameScene, 
     loseScene, 
+    mainMenuScene,
     prefScene,
     startScene,
     startMpScene,

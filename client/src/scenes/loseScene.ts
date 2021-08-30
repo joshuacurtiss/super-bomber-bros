@@ -17,6 +17,6 @@ export default function () {
         pos(width()*0.5, height()*0.6 )
     ])
     keyPress('space', ()=>{
-        go('game')
+        go('mainMenu')
     })
 }

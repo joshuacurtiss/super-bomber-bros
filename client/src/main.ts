@@ -1,5 +1,5 @@
 import k from './kaboom'
-import {gameScene, loseScene, prefScene, startScene, startMpScene, startSingleScene, timeupScene} from './scenes'
+import {gameScene, loseScene, mainMenuScene, prefScene, startScene, startMpScene, startSingleScene, timeupScene} from './scenes'
 
 const {
     loadSound, loadSprite, scene, start,
@@ -60,6 +60,7 @@ scene('start', startScene)
 scene('startMp', startMpScene)
 scene('startSingle', startSingleScene)
 scene('lose', loseScene)
+scene('mainMenu', mainMenuScene)
 scene('game', gameScene)
 scene('timeup', timeupScene)
 
