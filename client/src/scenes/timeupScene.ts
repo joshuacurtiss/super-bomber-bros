@@ -21,8 +21,11 @@ export default async function () {
         origin('center'),
         pos(width()*0.5, height()*0.6 )
     ])
-    keyPress('space', ()=>{
+    const mainAction = () => {
         timeupMusic.stop()
         go('game')
-    })
+    }
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
+    keyPress('escape', mainAction)
 }

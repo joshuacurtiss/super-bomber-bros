@@ -16,7 +16,10 @@ export default function () {
         origin('center'),
         pos(width()*0.5, height()*0.6 )
     ])
-    keyPress('space', ()=>{
+    const mainAction = () => {
         go('mainMenu')
-    })
+    }
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
+    keyPress('escape', mainAction)
 }

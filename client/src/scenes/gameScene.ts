@@ -24,6 +24,7 @@ import {
     GREEN,
     WHITE,
 } from '../types'
+import { Vec2 } from 'kaboom'
 
 const DEFAULT_GAME_TIME = 180
 const GRAVITY = 300
@@ -294,7 +295,7 @@ export default async function (mapId=1, mp=false) {
     let lastSpaceTime=0
     let lastSpacePos=vec2(0, 0)
     // Space and Double-space for bombs and P-Bombs
-    keyPress('space', ()=>{
+    const mainAction = () => {
         const t = time()
         const p = player.pos.clone()
         // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
@@ -306,11 +307,12 @@ export default async function (mapId=1, mp=false) {
             lastSpaceTime=t
             lastSpacePos=p
         }
-    })
+    }
+    const dirAction = (vec: Vec2) => player.walk(vec)
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
     Object.entries(DIRS).forEach(([dir, vec])=>{
-        keyDown(dir.toLowerCase(), ()=>{
-            player.walk(vec)
-        })
+        keyDown(dir.toLowerCase(), ()=>dirAction(vec))
         keyRelease(dir, player.stop)
     })
 

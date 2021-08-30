@@ -73,12 +73,14 @@ export default function (menuIndex=0) {
     keyPress('down', ()=>{
         changeMenuIndex(menuIndex===menu.length-1 ? menu.length-1 : menuIndex+1)
     })
-    keyPress('space', ()=>{
+    const mainAction = () => {
         music.stop()
         if( menuIndex===0 ) go('startSingle')
         if( menuIndex===1 ) go('startMp')
         if( menuIndex===2 ) go('pref')
-    })
+    }
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
     // Init
     changeMenuIndex(menuIndex)
 }

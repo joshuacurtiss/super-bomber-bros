@@ -39,7 +39,7 @@ export default function () {
         pos(width()*0.5, height()*0.65 ),
     ])
     // Keypresses
-    keyPress('space', ()=>{
-        go('mainMenu')
-    })
+    const mainAction = ()=>go('mainMenu')
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
 }

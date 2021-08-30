@@ -26,8 +26,10 @@ export default function (level: number=1) {
         origin('center'),
         pos(width()*0.5, height()*0.6)
     ])
-    keyPress('space', ()=>{
+    const mainAction = () => {
         music.stop()
         go('game', level, false)
-    })
+    }
+    keyPress('space', mainAction)
+    keyPress('enter', mainAction)
 }
