@@ -4,6 +4,7 @@ import canDie from '../abilities/canDie'
 import canScore from '../abilities/canScore'
 import canWalk from '../abilities/canWalk'
 import enemy from '../abilities/enemy'
+import characters from '../characters'
 import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
 import brickFeature from '../features/brick'
@@ -217,11 +218,13 @@ export default async function (mapId=1, mp=false) {
 
     // Player
     const {x: playerX, y: playerY} = convertMapPosToCoord(findMapItem(map, '1'))
+    const playerTypes = ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario']
+    const chosenPlayer = choose(playerTypes)
+    const chosenPlayerComp = characters[chosenPlayer] || characters.generic
     const player = add([
-        sprite(choose(['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'wario'])),
+        sprite(chosenPlayer),
         pos(playerX, playerY),
-        scale(2),
-        area(vec2(2,2), vec2(14,16)),
+        chosenPlayerComp(),
         canBomb(),
         canDie(),
         canScore(),

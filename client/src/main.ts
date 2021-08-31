@@ -6,7 +6,7 @@ const {
 } = k
 
 // Characters
-for( const name of ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'wario'] ) {
+for( const name of ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario'] ) {
     loadSprite(name, `assets/characters/${name}.png`)
 }
 
