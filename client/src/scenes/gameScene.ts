@@ -238,7 +238,7 @@ export default async function (mapId=1, mp=false) {
     player.on('died', ()=>{
         music.stop()
         timer.pause()
-        wait(2, ()=>{
+        wait(2.6, ()=>{
             go('lose')
         })
     })
@@ -299,6 +299,7 @@ export default async function (mapId=1, mp=false) {
     let lastSpacePos=vec2(0, 0)
     // Space and Double-space for bombs and P-Bombs
     const mainAction = () => {
+        if( player.isDead() ) return
         const t = time()
         const p = player.pos.clone()
         // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
@@ -311,7 +312,10 @@ export default async function (mapId=1, mp=false) {
             lastSpacePos=p
         }
     }
-    const dirAction = (vec: Vec2) => player.walk(vec)
+    const dirAction = (vec: Vec2) => {
+        if( player.isDead() ) return
+        player.walk(vec)
+    }
     keyPress('space', mainAction)
     keyPress('enter', mainAction)
     Object.entries(DIRS).forEach(([dir, vec])=>{
