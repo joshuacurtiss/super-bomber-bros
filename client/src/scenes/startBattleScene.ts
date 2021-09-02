@@ -9,7 +9,7 @@ export default function () {
     const volume = 0.25
     const music = play('menu-3', {loop, volume})
     add([
-        text("Multiplayer Game", 18),
+        text("Battle Round", 18),
         WHITE,
         origin('center'),
         pos(width()*0.5, height()*0.25 )

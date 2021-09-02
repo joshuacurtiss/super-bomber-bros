@@ -1,5 +1,5 @@
 import k from './kaboom'
-import {gameScene, loseScene, mainMenuScene, prefScene, startScene, startMpScene, startSingleScene, timeupScene} from './scenes'
+import {gameScene, loseScene, mainMenuScene, prefScene, startScene, startBattleScene, startCampaignScene, timeupScene} from './scenes'
 
 const {
     loadSound, loadSprite, scene, start,
@@ -58,8 +58,8 @@ loadSprite('powerups', 'assets/map/powerups.png', {gridWidth: 16, gridHeight: 16
 // Scenes
 scene('pref', prefScene)
 scene('start', startScene)
-scene('startMp', startMpScene)
-scene('startSingle', startSingleScene)
+scene('startBattle', startBattleScene)
+scene('startCampaign', startCampaignScene)
 scene('lose', loseScene)
 scene('mainMenu', mainMenuScene)
 scene('game', gameScene)

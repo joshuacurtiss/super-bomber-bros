@@ -37,13 +37,13 @@ export default function (menuIndex=0) {
     ])
     const menu = [
         add([
-            text("Single Player Game", 14),
+            text("Start a Campaign", 14),
             WHITE,
             origin('center'),
             pos(width()*0.5, height()*0.55 ),
         ]),
         add([
-            text("Multiplayer Game", 14),
+            text("Play Battle Round", 14),
             WHITE,
             origin('center'),
             pos(width()*0.5, height()*0.65 ),
@@ -75,8 +75,8 @@ export default function (menuIndex=0) {
     })
     const mainAction = () => {
         music.stop()
-        if( menuIndex===0 ) go('startSingle')
-        if( menuIndex===1 ) go('startMp')
+        if( menuIndex===0 ) go('startCampaign')
+        if( menuIndex===1 ) go('startBattle')
         if( menuIndex===2 ) go('pref')
     }
     keyPress('space', mainAction)

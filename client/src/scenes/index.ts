@@ -3,8 +3,8 @@ import loseScene from './loseScene'
 import mainMenuScene from './mainMenuScene'
 import prefScene from './prefScene'
 import startScene from './startScene'
-import startMpScene from './startMpScene'
-import startSingleScene from './startSingleScene'
+import startBattleScene from './startBattleScene'
+import startCampaignScene from './startCampaignScene'
 import timeupScene from './timeupScene'
 
 export {
@@ -13,7 +13,7 @@ export {
     mainMenuScene,
     prefScene,
     startScene,
-    startMpScene,
-    startSingleScene,
+    startBattleScene,
+    startCampaignScene,
     timeupScene,
 }
