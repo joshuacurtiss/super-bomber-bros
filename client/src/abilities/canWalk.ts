@@ -23,6 +23,7 @@ function canWalk(speed: number = WALK_SPEED) {
             network.send(CMDS.PLAYER_STOP)
         },
         walk(direction: Vec2) {
+            if( this.isDead() ) return
             walking=true
             dir=direction
             this.move(dir.scale(speed*multiplier))
@@ -43,6 +44,7 @@ function canWalk(speed: number = WALK_SPEED) {
             }
         },  
         update() {
+            this.resolve()
             if( multiplierTimeout===0 ) return
             if( time() > multiplierTimeout ) {
                 multiplierTimeout=0

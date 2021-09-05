@@ -1,5 +1,6 @@
 import {k, debug, network} from '../kaboom'
 import canBomb from '../abilities/canBomb'
+import canControl from '../abilities/canControl'
 import canDie from '../abilities/canDie'
 import canScore from '../abilities/canScore'
 import canWalk from '../abilities/canWalk'
@@ -11,9 +12,14 @@ import brickFeature from '../features/brick'
 import timerFeature from '../features/timer'
 import maps from '../maps/campaign.json'
 
-import {convertMapPosToCoord, findMapItem, findMapItems, getOverlapped} from '../util'
+import { keyboardDefaults } from '../abilities/canControl'
 import {
-    DIRS,
+    convertMapPosToCoord, 
+    findMapItem, 
+    findMapItems,
+    getOverlapped,
+} from '../util'
+import {
     GRID_PIXEL_SIZE,
     MAP_WIDTH,
     MAP_WIDTH_PIXELS,
@@ -25,7 +31,6 @@ import {
     GREEN,
     WHITE,
 } from '../types'
-import { Vec2 } from 'kaboom'
 
 const DEFAULT_GAME_TIME = 180
 const GRAVITY = 300
@@ -39,12 +44,8 @@ const {
     area,
     choose,
     destroy,
-    every,
     go, 
     gravity,
-    keyDown, 
-    keyPress, 
-    keyRelease,
     layer,
     layers, 
     loadSound,
@@ -58,7 +59,6 @@ const {
     solid,
     sprite,
     text,
-    time,
     vec2, 
     wait,
 } = k
@@ -141,7 +141,7 @@ export default async function (mapId=1, mp=false) {
         music.pause()
         play('hurryup')
         wait(3.3, ()=>{
-            if( player.isAlive() ) {
+            if( !allPlayersDied() ) {
                 music.speed(MUSIC_HURRY_SPEED)
                 music.detune(MUSIC_HURRY_DETUNE)
                 music.play()
@@ -204,7 +204,7 @@ export default async function (mapId=1, mp=false) {
                 speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
             })
             wait(2.4, ()=>{
-                if( !music.paused() && player.isAlive() ) {
+                if( !music.paused() && !allPlayersDied() ) {
                     music = play('music', {
                         volume, 
                         loop: true, 
@@ -217,36 +217,39 @@ export default async function (mapId=1, mp=false) {
     }
 
     // Player
-    const {x: playerX, y: playerY} = convertMapPosToCoord(findMapItem(map, '1'))
     const playerTypes = ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario']
-    const chosenPlayer = choose(playerTypes)
-    const chosenPlayerComp = characters[chosenPlayer] || characters.generic
-    const player = add([
-        sprite(chosenPlayer),
-        pos(playerX, playerY),
-        chosenPlayerComp(),
-        canBomb(),
-        canDie(),
-        canScore(),
-        canWalk(),
-        'can-get-hurt',
-        'player',
-    ])
-    player.action(() => {
-        player.resolve()
+    const players = Array('1', '2', '3', '4').map((playerNumString, i)=>{
+        const {x, y} = convertMapPosToCoord(findMapItem(map, playerNumString))
+        const chosenPlayer = choose(playerTypes)
+        const chosenPlayerComp = characters[chosenPlayer] || characters.generic
+        return add([
+            sprite(chosenPlayer),
+            pos(x, y),
+            chosenPlayerComp(),
+            canBomb(),
+            canControl(keyboardDefaults[i]),
+            canDie(),
+            canScore(),
+            canWalk(),
+            'can-get-hurt',
+            'player',
+        ])
     })
-    player.on('died', ()=>{
-        music.stop()
-        timer.pause()
-        wait(2.6, ()=>{
-            go('lose')
-        })
-    })
-    const updateHeaderScore = () => {
-        score.text = `Score: ${player.getScore().toLocaleString()}`
+    const allPlayersDied = () => players.every(player=>player.isDead())
+    const handlePlayerDied = () => {
+        if( allPlayersDied() ) {
+            music.stop()
+            timer.pause()
+            wait(2.6, ()=>go('lose'))
+        }
     }
-    updateHeaderScore()
-    player.on('score_changed', updateHeaderScore)
+    const updateHeaderScores = () => {
+        score.text = `Score: ${players[0].getScore().toLocaleString()}`
+    }
+    players.forEach(player=>{
+        player.on('died', handlePlayerDied)
+        player.on('score_changed', updateHeaderScores)
+    })
     overlaps('bomb', 'player', (bomb, player)=>{
         if( bomb.solid ) player.kickBomb(bomb)
     })
@@ -294,38 +297,10 @@ export default async function (mapId=1, mp=false) {
         }
     })
 
-    // Controls
-    let lastSpaceTime=0
-    let lastSpacePos=vec2(0, 0)
-    // Space and Double-space for bombs and P-Bombs
-    const mainAction = () => {
-        if( player.isDead() ) return
-        const t = time()
-        const p = player.pos.clone()
-        // If double-tap spacebar (within .3 sec) without moving, spawn P-Bomb
-        if( t-lastSpaceTime<0.3 && p.eq(lastSpacePos) ) {
-            player.spawnPBomb()
-            lastSpaceTime=0
-        } else {
-            player.spawnBomb()
-            lastSpaceTime=t
-            lastSpacePos=p
-        }
-    }
-    const dirAction = (vec: Vec2) => {
-        if( player.isDead() ) return
-        player.walk(vec)
-    }
-    keyPress('space', mainAction)
-    keyPress('enter', mainAction)
-    Object.entries(DIRS).forEach(([dir, vec])=>{
-        keyDown(dir.toLowerCase(), ()=>dirAction(vec))
-        keyRelease(dir, player.stop)
-    })
-
     // Debugging
     k.debug.clearLog()
 
     // Start
+    updateHeaderScores()
     startGame()
 }

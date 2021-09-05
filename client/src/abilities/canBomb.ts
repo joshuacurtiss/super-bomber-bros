@@ -16,6 +16,7 @@ const {
     rotate,
     scale,
     sprite,
+    time,
     vec2,
     wait,
 } = k
@@ -32,6 +33,31 @@ function canBomb() {
     let bombCnt = 0
     let bombKick = false
     let pbomb = false
+    let lastBombTime = 0
+    let lastBombPos = vec2(0, 0)
+
+    /**
+     * Spawns a new bomb at the player's position. If you double-tapped bomb,
+     * it will trigger the P-Bomb.
+     */
+    function spawnBomb(): boolean {
+        if( this.isDead() ) return
+        const t = time()
+        const p = this.pos.clone()
+        if( t-lastBombTime<0.3 && p.eq(lastBombPos) ) {
+            // If double-tap bomb (within .3 sec) without moving, spawn P-Bomb
+            this.spawnPBomb()
+            lastBombTime = 0
+        } else {
+            lastBombTime = t
+            lastBombPos = p
+            // Use player's area instead of sprite position to be a little more accurate
+            // to what player expects. Also, we add a couple pixels vertically so the 
+            // placement favors the feet over the head.
+            return this.spawnBombAtPos(this.pos.add(this.area.p1).add(vec2(0, 2)))
+        }
+    }
+
     return {
         setRadius: newradius=>radius=newradius,
         getRadius: ()=>radius,
@@ -264,15 +290,6 @@ function spawnBombAtPos(position: Vec2): boolean {
     this.incBombCnt()
     network.send(CMDS.BOMB_SPAWN, snappedPosition)
     return true
-}
-
-/**
- * Spawns a new bomb at the player's position.
- */
-function spawnBomb(): boolean {
-    // Use player's area instead of sprite position to be a little more accurate to what player expects. 
-    // Also, we add a couple pixels vertically so the placement favors the feet over the head.
-    return this.spawnBombAtPos(this.pos.add(this.area.p1).add(vec2(0, 2)))
 }
 
 /**
