@@ -1,6 +1,6 @@
 import { CMDS } from '../model/Network'
 import {k, debug, network} from '../kaboom'
-import {getAtPos, snapToGrid} from '../util'
+import {getAtPos, getOverlapped, snapToGrid} from '../util'
 import {LEFT, RIGHT, UP, DOWN, IDLE, GRID_PIXEL_SIZE, POWERUPS, BOMB_SPEED} from '../types'
 import {Vec2} from 'kaboom'
 
@@ -140,10 +140,11 @@ function canBomb() {
             }
             // Check if bomb should be made solid
             if( !this.solid ) {
-                const playerCenter = player.pos.add(player.area.p1.add(player.area.p2).scale(0.5))
-                const bombCenter = this.pos.add(this.area.p1.add(this.area.p2).scale(0.5))
-                this.solid = playerCenter.dist(bombCenter) > 30
-                this.use('solid')
+                const items = getOverlapped(this, 'player')
+                if( !items.length ) {
+                    this.solid = true
+                    this.use('solid')
+                }
             }
         },
         remove() {
