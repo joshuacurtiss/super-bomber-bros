@@ -20,7 +20,9 @@ import {
     getOverlapped,
 } from '../util'
 import {
+    DEFAULT_GAME_TIME,
     GRID_PIXEL_SIZE,
+    GRAVITY,
     MAP_WIDTH,
     MAP_WIDTH_PIXELS,
     MAP_HEIGHT,
@@ -31,9 +33,6 @@ import {
     GREEN,
     WHITE,
 } from '../types'
-
-const DEFAULT_GAME_TIME = 180
-const GRAVITY = 300
 
 const noArea = true
 

@@ -8,6 +8,11 @@ export const MAP_WIDTH_PIXELS = MAP_WIDTH * GRID_PIXEL_SIZE
 export const MAP_HEIGHT = 13
 export const MAP_HEIGHT_PIXELS = MAP_HEIGHT * GRID_PIXEL_SIZE
 
+export const GRAVITY = 300
+export const HEAVY_GRAVITY = 1600
+
+export const DEFAULT_GAME_TIME = 180
+
 export const WHITE = color(1, 1, 1)
 export const BLUE = color(0.39, 0.47, 0.937)
 export const GREEN = color(0.223, 0.517, 0)

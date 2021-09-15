@@ -1,5 +1,9 @@
 import { CMDS } from '../model/Network'
 import { k, network } from '../kaboom'
+import {
+    GRAVITY,
+    HEAVY_GRAVITY,
+} from '../types'
 
 const {
     body,
@@ -28,10 +32,11 @@ export default function() {
             wait(0.8, ()=>{
                 this.use(body({jumpForce: 900, maxVel: 5000}))
                 this.jump()
-                gravity(1600)
+                gravity(HEAVY_GRAVITY)
             })
             wait(3, ()=>{
                 destroy(this)
+                gravity(GRAVITY)
             })
         },
     }
