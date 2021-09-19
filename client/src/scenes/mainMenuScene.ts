@@ -1,5 +1,6 @@
 import {k} from '../kaboom'
 import {WHITE, YELLOW} from '../types'
+import {getMusVol} from '../util'
 
 function blowup() {
     return {
@@ -13,9 +14,7 @@ export default function (menuIndex=0) {
     const {
         add, go, keyPress, origin, play, pos, scale, sprite, text, width, height
     } = k
-    const loop = true
-    const volume = 0.25
-    let music = play('menu-1', {loop, volume})
+    let music = play('menu-1', {loop: true, volume: getMusVol()})
     add([
         sprite('title-super'),
         pos(width()*0.5, height()*0.25),

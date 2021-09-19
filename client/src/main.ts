@@ -27,7 +27,7 @@ Array('super', 'bomber', 'bros', 'mushroom').forEach(img=>loadSprite(`title-${im
 Array(1,2,3,4).map(i=>loadSound(`menu-${i}`, `assets/music/menu-${i}.ogg`))
 
 // Map
-loadSprite('gameover', 'assets/title/gameover.png')
+Array('audio-speaker', 'gameover', 'music-note').forEach(img=>loadSprite(img, `assets/title/${img}.png`))
 loadSprite('block', 'assets/map/block.png')
 loadSprite('brick', 'assets/map/brick.png', {gridWidth: 16, gridHeight: 16, anims: {explode: {from: 1, to: 6}}})
 loadSprite('bomb', 'assets/map/bomb.png', {gridWidth: 16, gridHeight: 16, anims: {bomb: {from: 0, to: 3}}})

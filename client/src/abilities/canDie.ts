@@ -1,5 +1,6 @@
 import { CMDS } from '../model/Network'
 import { k, network } from '../kaboom'
+import { getSfxVol } from '../util'
 import {
     GRAVITY,
     HEAVY_GRAVITY,
@@ -26,7 +27,7 @@ export default function() {
             this.solid=false
             this.scale = this.scale.scale(2)
             this.pos=this.pos.sub(vec2(this.width, this.height))
-            play('die')
+            play('die', {volume: getSfxVol()})
             this.trigger('died')
             network.send(CMDS.PLAYER_DIE)
             wait(0.8, ()=>{

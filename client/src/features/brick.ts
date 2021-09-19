@@ -1,5 +1,6 @@
 import k from '../kaboom'
 import {POWERUPS} from '../types'
+import {getSfxVol} from '../util'
 
 const {
     add,
@@ -25,7 +26,7 @@ export default function() {
     randSeed(Date.now());
     return {
         explode() {
-            play('breakbrick')
+            play('breakbrick', {volume: getSfxVol()})
             destroy(this)
             const explodingBrick = add([
                 sprite('brick'),
@@ -36,7 +37,7 @@ export default function() {
             wait(0.5, ()=>{
                 const frame = randomPowerup()
                 if( frame>=0 ) {
-                    play('powerupappears')
+                    play('powerupappears', {volume: getSfxVol()})
                     add([
                         sprite('powerups', {frame}),
                         scale(2),

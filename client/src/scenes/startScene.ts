@@ -11,7 +11,7 @@ function blowup() {
 
 export default function () {
     const {
-        add, go, keyPress, origin, play, pos, scale, sprite, text, width, height
+        add, go, keyPress, origin, pos, scale, sprite, text, width, height
     } = k
     add([
         sprite('title-super'),

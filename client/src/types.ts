@@ -14,6 +14,7 @@ export const HEAVY_GRAVITY = 1600
 export const DEFAULT_GAME_TIME = 180
 
 export const WHITE = color(1, 1, 1)
+export const BLACK = color(0, 0, 0)
 export const BLUE = color(0.39, 0.47, 0.937)
 export const GREEN = color(0.223, 0.517, 0)
 export const YELLOW = color(1, 1, 0)
@@ -34,6 +35,12 @@ export const ENEMY_SPEED = 60
 
 export const MUSIC_HURRY_SPEED = 1.5
 export const MUSIC_HURRY_DETUNE = -600
+
+export enum LOCALSTORAGE_KEYS {
+    SFX_VOL = 'sfx_vol',
+    MUS_VOL = 'mus_vol',
+}
+export const DEFAULT_VOL = '50'
 
 export const POWERUPS: Record<string, number> = {
     RADIUS: 0,

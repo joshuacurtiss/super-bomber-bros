@@ -18,6 +18,8 @@ import {
     findMapItem, 
     findMapItems,
     getOverlapped,
+    getMusVol,
+    getSfxVol,
 } from '../util'
 import {
     DEFAULT_GAME_TIME,
@@ -65,7 +67,6 @@ const {
 export default async function (mapId=1, mp=false) {
 
     const map=maps[mapId]
-    const volume=0.25
     let music
 
     // Networking
@@ -138,7 +139,7 @@ export default async function (mapId=1, mp=false) {
     timer.on('hurry_up', ()=>{
         debug("Time's running out!")
         music.pause()
-        play('hurryup')
+        play('hurryup', {volume: getMusVol()})
         wait(3.3, ()=>{
             if( !allPlayersDied() ) {
                 music.speed(MUSIC_HURRY_SPEED)
@@ -198,14 +199,14 @@ export default async function (mapId=1, mp=false) {
         if( !timer.started() ) {
             timer.start()
             music = play('music-intro', {
-                volume,
+                volume: getMusVol(),
                 detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0, 
                 speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
             })
             wait(2.4, ()=>{
                 if( !music.paused() && !allPlayersDied() ) {
                     music = play('music', {
-                        volume, 
+                        volume: getMusVol(), 
                         loop: true, 
                         detune: timer.isHurry() ? MUSIC_HURRY_DETUNE : 0,
                         speed: timer.isHurry() ? MUSIC_HURRY_SPEED : 1
@@ -259,14 +260,14 @@ export default async function (mapId=1, mp=false) {
         player.die()
     })
     overlaps('coin', 'player', (coin, player)=>{
-        play('coin')
+        play('coin', {volume: getSfxVol()})
         if( coin.is('coin-10') ) player.incScore(10)
         else if( coin.is('coin-30') ) player.incScore(30)
         else if( coin.is('coin-50') ) player.incScore(50)
         destroy(coin)
     })
     overlaps('powerup', 'player', (powerup, player)=>{
-        play('powerup')
+        play('powerup', {volume: getSfxVol()})
         player.bombPowerup(powerup.frame)
         player.walkPowerup(powerup.frame)
         timer.powerup(powerup.frame)
@@ -279,7 +280,7 @@ export default async function (mapId=1, mp=false) {
         // When the falling block is close to its target, snap it into place.
         const distance = b.pos.dist(b.targ)
         if( distance<GRID_PIXEL_SIZE/5 ) {
-            play('thud')
+            play('thud', {volume: getSfxVol()})
             b.pos=b.targ
             // Remove the 'fallingblock' tag so it will stop falling.
             b.rmTag('fallingblock')

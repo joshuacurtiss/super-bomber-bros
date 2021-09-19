@@ -1,6 +1,6 @@
 import { CMDS } from '../model/Network'
 import {k, debug, network} from '../kaboom'
-import {getAtPos, getOverlapped, snapToGrid} from '../util'
+import {getAtPos, getOverlapped, getSfxVol, snapToGrid} from '../util'
 import {LEFT, RIGHT, UP, DOWN, IDLE, GRID_PIXEL_SIZE, POWERUPS, BOMB_SPEED} from '../types'
 import {Vec2} from 'kaboom'
 
@@ -112,7 +112,7 @@ function canBomb() {
             timer-=dt()
             if( timer<0 ) {
                 // Bomb should explode when timer passes zero
-                play('explosion')
+                play('explosion', {volume: getSfxVol()})
                 this.explode()
             } else if( timer<=1 && (!this.moving || this.moving.eq(IDLE)) ) {
                 // If less than 1 sec and no motion, shake the bomb ever so slightly
@@ -278,7 +278,7 @@ function spawnBombAtPos(position: Vec2): boolean {
     })
     if( objs.length ) return false
     // All good? Spawn the bomb.
-    play('laybomb')
+    play('laybomb', {volume: getSfxVol()})
     const bomb = add([
         sprite('bomb'),
         scale(2),

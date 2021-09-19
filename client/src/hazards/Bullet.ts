@@ -1,8 +1,6 @@
 import k from '../kaboom'
-import { 
-    GRID_PIXEL_SIZE,
-    MAP_HEIGHT_PIXELS,
-} from '../types'
+import {GRID_PIXEL_SIZE, MAP_HEIGHT_PIXELS} from '../types'
+import {getSfxVol} from '../util'
 
 const {
     add,
@@ -16,7 +14,7 @@ const {
 } = k
 
 export default function() {
-    play('bullet')
+    play('bullet', {volume: getSfxVol()})
     const dir = rand()>0.5 ? 1 : -1
     const bullet = add([
         sprite('bullet'),

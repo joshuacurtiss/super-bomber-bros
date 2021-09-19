@@ -1,4 +1,5 @@
 import k from '../kaboom'
+import {getMusVol} from '../util'
 
 export default async function () {
     const {
@@ -8,7 +9,7 @@ export default async function () {
         loadSprite('timeup', 'assets/title/timeup.png'),
         loadSound('timeup', 'assets/sfx/smw_game_over.ogg'),
     ])
-    const timeupMusic = play('timeup')
+    const timeupMusic = play('timeup', {volume: getMusVol()})
     add([
         sprite('timeup', {noArea: true}),
         scale(2),

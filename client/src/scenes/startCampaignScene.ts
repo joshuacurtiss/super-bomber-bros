@@ -1,13 +1,12 @@
 import k from '../kaboom'
 import {WHITE} from '../types'
+import {getMusVol} from '../util'
 
 export default function (level: number=1) {
     const {
         add, go, keyPress, origin, pos, play, text, width, height
     } = k
-    const loop = true
-    const volume = 0.25
-    const music = play('menu-4', {loop, volume})
+    const music = play('menu-4', {loop: true, volume: getMusVol()})
     add([
         text(`Level ${level}`, 18),
         WHITE,

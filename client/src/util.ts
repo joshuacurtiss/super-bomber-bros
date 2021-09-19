@@ -1,6 +1,6 @@
 import {k} from './kaboom'
 import {GameObj, Vec2} from 'kaboom'
-import {GRID_PIXEL_SIZE} from './types'
+import {DEFAULT_VOL, GRID_PIXEL_SIZE, LOCALSTORAGE_KEYS} from './types'
 
 const {get, vec2} = k
 
@@ -82,12 +82,21 @@ function vec2floor(pos:Vec2) {
     return vec2(Math.floor(x), Math.floor(y))
 }
 
+function getVol(which:LOCALSTORAGE_KEYS): number {
+    return parseInt(localStorage[which] ?? DEFAULT_VOL) / 100
+}
+
+const getSfxVol = () => getVol(LOCALSTORAGE_KEYS.SFX_VOL)
+const getMusVol = () => getVol(LOCALSTORAGE_KEYS.MUS_VOL)
+
 export {
     convertMapPosToCoord,
     findMapItems,
     findMapItem,
     getAtPos,
     getOverlapped,
+    getSfxVol,
+    getMusVol,
     snapToGrid,
     vec2floor,
 }
