@@ -14,9 +14,12 @@ export const HEAVY_GRAVITY = 1600
 export const DEFAULT_GAME_TIME = 180
 
 export const WHITE = color(1, 1, 1)
+export const DARKGRAY = color(0.25, 0.25, 0.25)
+export const LIGHTGRAY = color(0.5, 0.5, 0.5)
 export const BLACK = color(0, 0, 0)
 export const BLUE = color(0.39, 0.47, 0.937)
 export const GREEN = color(0.223, 0.517, 0)
+export const RED = color(1, 0, 0)
 export const YELLOW = color(1, 1, 0)
 
 export const COLORS = {WHITE, BLUE, GREEN}
@@ -33,7 +36,7 @@ export const BOMB_SPEED = 175
 export const WALK_SPEED = 120
 export const ENEMY_SPEED = 60
 
-export const MUSIC_HURRY_SPEED = 1.5
+export const MUSIC_HURRY_SPEED = 1.75
 export const MUSIC_HURRY_DETUNE = -600
 
 export enum LOCALSTORAGE_KEYS {

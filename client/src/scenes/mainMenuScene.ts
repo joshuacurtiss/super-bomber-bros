@@ -74,8 +74,8 @@ export default function (menuIndex=0) {
     })
     const mainAction = () => {
         music.stop()
-        if( menuIndex===0 ) go('startCampaign')
-        if( menuIndex===1 ) go('startBattle')
+        if( menuIndex===0 ) go('playerSelection', 'startCampaign')
+        if( menuIndex===1 ) go('playerSelection', 'startBattle')
         if( menuIndex===2 ) go('pref')
     }
     keyPress('space', mainAction)

@@ -64,7 +64,7 @@ const {
     wait,
 } = k
 
-export default async function (mapId=1, mp=false) {
+export default async function (playerCount=1, mapId=1, mp=false) {
 
     const map=maps[mapId]
     let music
@@ -218,7 +218,8 @@ export default async function (mapId=1, mp=false) {
 
     // Player
     const playerTypes = ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario']
-    const players = Array('1', '2', '3', '4').map((playerNumString, i)=>{
+    const players = Array.from(Array(playerCount).keys()).map(i=>{
+        const playerNumString = (i+1).toString()
         const {x, y} = convertMapPosToCoord(findMapItem(map, playerNumString))
         const chosenPlayer = choose(playerTypes)
         const chosenPlayerComp = characters[chosenPlayer] || characters.generic
