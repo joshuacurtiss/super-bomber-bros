@@ -31,6 +31,7 @@ import {
     MAP_HEIGHT_PIXELS,
     MUSIC_HURRY_DETUNE,
     MUSIC_HURRY_SPEED,
+    PLAYER_TYPES,
     BLUE,
     GREEN,
     WHITE,
@@ -217,11 +218,10 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     }
 
     // Player
-    const playerTypes = ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario']
     const players = Array.from(Array(playerCount).keys()).map(i=>{
         const playerNumString = (i+1).toString()
         const {x, y} = convertMapPosToCoord(findMapItem(map, playerNumString))
-        const chosenPlayer = choose(playerTypes)
+        const chosenPlayer = choose(PLAYER_TYPES)
         const chosenPlayerComp = characters[chosenPlayer] || characters.generic
         return add([
             sprite(chosenPlayer),

@@ -56,3 +56,5 @@ export const POWERUPS: Record<string, number> = {
     TIME: 14,
     P_BOMB: 15,
 }
+
+export const PLAYER_TYPES = ['bomberman-tiny', 'daisy', 'luigi', 'mario', 'peach', 'toad', 'toadsworth', 'wario']
