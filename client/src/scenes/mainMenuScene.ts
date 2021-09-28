@@ -1,39 +1,14 @@
+import createTitle from './createTitle'
 import {k} from '../kaboom'
 import {WHITE, YELLOW} from '../types'
 import {getMusVol} from '../util'
 
-function blowup() {
-    return {
-        update() {
-            this.scale = Math.abs(Math.sin(k.time()) * 1.5)+1.5
-        },
-    }
-}
-
 export default function (menuIndex=0) {
     const {
-        add, go, keyPress, origin, play, pos, scale, sprite, text, width, height
+        add, go, keyPress, origin, play, pos, sprite, text, width, height
     } = k
     let music = play('menu-1', {loop: true, volume: getMusVol()})
-    add([
-        sprite('title-super'),
-        pos(width()*0.5, height()*0.25),
-        scale(1.8),
-        blowup(),
-        origin('center')
-    ])
-    add([
-        sprite('title-bomber'),
-        pos(width()*0.5 - 60, height()*0.4),
-        scale(1.15),
-        origin('center')
-    ])
-    add([
-        sprite('title-bros'),
-        pos(width()*0.5 + 120, height()*0.4),
-        scale(1.5),
-        origin('center')
-    ])
+    createTitle()
     const menu = [
         add([
             text("Start a Campaign", 14),
