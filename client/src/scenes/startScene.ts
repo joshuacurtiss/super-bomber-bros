@@ -4,12 +4,12 @@ import {WHITE} from '../types'
 
 export default function () {
     const {
-        add, go, keyPress, origin, pos, text, width, height
+        add, color, go, keyPress, origin, pos, text, width, height
     } = k
     createTitle()
     add([
         text("Press spacebar to begin!", 14, {noArea: true}),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.65 ),
     ])

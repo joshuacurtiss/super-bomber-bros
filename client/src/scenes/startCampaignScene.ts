@@ -4,24 +4,24 @@ import {getMusVol} from '../util'
 
 export default function (playerCount: number=1, level: number=1) {
     const {
-        add, go, keyPress, origin, pos, play, text, width, height
+        add, color, go, keyPress, origin, pos, play, text, width, height
     } = k
     const music = play('menu-4', {loop: true, volume: getMusVol()})
     add([
         text(`Level ${level}`, 18),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.3)
     ])
     add([
         text("Get Ready!", 12),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.4 )
     ])
     add([
         text("Press spacebar to begin", 9),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.6)
     ])

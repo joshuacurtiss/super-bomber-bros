@@ -4,24 +4,24 @@ import {getMusVol} from '../util'
 
 export default function () {
     const {
-        add, go, keyPress, origin, pos, play, text, width, height
+        add, color, go, keyPress, origin, pos, play, text, width, height
     } = k
     const music = play('menu-3', {loop: true, volume: getMusVol()})
     add([
         text("Battle Round", 18),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.25 )
     ])
     add([
         text("Not available yet!", 12),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.4 )
     ])
     add([
         text("Press spacebar to go back", 9),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.6 )
     ])

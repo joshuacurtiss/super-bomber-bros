@@ -6,7 +6,7 @@ const {SFX_VOL, MUS_VOL} = LOCALSTORAGE_KEYS
 
 export default function () {
     const {
-        add, go, keyPress, origin, pos, play, rect, sprite, text, width, height
+        add, color, go, keyPress, origin, pos, play, rect, sprite, text, width, height
     } = k
     const VOL_DELTA_AMT = 5
     const keys = [SFX_VOL, MUS_VOL]
@@ -16,7 +16,7 @@ export default function () {
     // Title
     add([
         text("Preferences", 18),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.15 )
     ])
@@ -42,13 +42,13 @@ export default function () {
         text("Back to main menu", 12),
         origin('center'),
         pos(width()*0.5, height()*0.7 ),
-        WHITE,
+        color(WHITE),
     ]))
     const changeMenuIndex = (index:number) => {
         if( index<0 ) index=0
         if( index>menu.length-1 ) index=menu.length-1
-        menu[menuIndex].color = WHITE.color
-        menu[index].color = YELLOW.color
+        menu[menuIndex].color = WHITE
+        menu[index].color = YELLOW
         menuIndex = index
     }
     const changeLevel = (index:number, delta:number) => {

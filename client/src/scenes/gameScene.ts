@@ -45,6 +45,7 @@ const {
     addLevel, 
     area,
     choose,
+    color,
     destroy,
     go, 
     gravity,
@@ -100,7 +101,7 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     add([
         rect(MAP_WIDTH_PIXELS, MAP_HEIGHT_PIXELS, {noArea}),
         pos(0, GRID_PIXEL_SIZE),
-        GREEN,
+        color(GREEN),
         layer('bg'),
     ])
 
@@ -125,8 +126,8 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     })
 
     // Header/Score/Timer
-    add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), WHITE])
-    add([rect(MAP_WIDTH_PIXELS-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), BLUE])
+    add([rect(MAP_WIDTH_PIXELS-1, GRID_PIXEL_SIZE-1, {noArea}), color(WHITE)])
+    add([rect(MAP_WIDTH_PIXELS-5, GRID_PIXEL_SIZE-5, {noArea}), pos(2, 2), color(BLUE)])
     const timer = add([
         text("", 16, {noArea}),
         pos(12, 9),

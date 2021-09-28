@@ -5,26 +5,26 @@ import {getMusVol} from '../util'
 
 export default function (menuIndex=0) {
     const {
-        add, go, keyPress, origin, play, pos, sprite, text, width, height
+        add, color, go, keyPress, origin, play, pos, sprite, text, width, height
     } = k
     let music = play('menu-1', {loop: true, volume: getMusVol()})
     createTitle()
     const menu = [
         add([
             text("Start a Campaign", 14),
-            WHITE,
+            color(WHITE),
             origin('center'),
             pos(width()*0.5, height()*0.55 ),
         ]),
         add([
             text("Play Battle Round", 14),
-            WHITE,
+            color(WHITE),
             origin('center'),
             pos(width()*0.5, height()*0.65 ),
         ]),
         add([
             text("Preferences", 14),
-            WHITE,
+            color(WHITE),
             origin('center'),
             pos(width()*0.5, height()*0.75 ),
         ]),
@@ -36,8 +36,8 @@ export default function (menuIndex=0) {
     // Keypresses
     const changeMenuIndex = (index:number) => {
         const {y} = menu[index].pos
-        menu[menuIndex].color = WHITE.color
-        menu[index].color = YELLOW.color
+        menu[menuIndex].color = WHITE
+        menu[index].color = YELLOW
         mushrooms.forEach(m=>m.pos.y=y)
         menuIndex = index
     }

@@ -5,7 +5,7 @@ import textbox from '../features/textbox'
 
 export default function (nextScene = 'startCampaign') {
     const {
-        add, charInput, destroy, go, keyPress, origin, play, pos, rect, rand, scale, sprite, text, width, height, wait
+        add, charInput, color, destroy, go, keyPress, origin, play, pos, rect, rand, text, width, height
     } = k
     let menuIndex = 0
     let playerCount = 1
@@ -14,24 +14,24 @@ export default function (nextScene = 'startCampaign') {
         rect(64, 64, {noArea: true}),
         pos(width()*0.5, height()*0.20),
         origin('center'),
-        DARKGRAY,
+        color(DARKGRAY),
     ])
     const addPlayerTitle = () => add([
         text('', 9),
         pos(width()*0.5, height()*0.2+48),
         origin('center'),
-        LIGHTGRAY,
+        color(LIGHTGRAY),
     ])
     // Title
     add([
         text("Player Selection", 18),
-        WHITE,
+        color(WHITE),
         origin('center'),
         pos(width()*0.5, height()*0.06)
     ])
     const err = add([
         text('', 11),
-        RED,
+        color(RED),
         origin('center'),
         pos(width()*0.5, height()*0.85),
     ])
@@ -76,22 +76,22 @@ export default function (nextScene = 'startCampaign') {
     const menu = [
         add([
             text(playersMenuItemLabel(), 14),
-            WHITE,
+            color(WHITE),
             pos(width()*0.1, height()*0.4),
         ]),
         add([
             text("Online: Off", 14),
-            WHITE,
+            color(WHITE),
             pos(width()*0.1, height()*0.475),
         ]),
         add([
             text("Start game!", 14),
-            WHITE,
+            color(WHITE),
             pos(width()*0.1, height()*0.55),
         ]),
         add([
             text("Back to Main Menu", 14),
-            WHITE,
+            color(WHITE),
             pos(width()*0.1, height()*0.625),
         ]),
     ]
@@ -107,8 +107,8 @@ export default function (nextScene = 'startCampaign') {
     const changeMenuIndex = (index:number) => {
         if( menuIndex===1 ) roomName?.blur()
         if( index===1 ) roomName?.focus()
-        menu[menuIndex].color = WHITE.color
-        menu[index].color = YELLOW.color
+        menu[menuIndex].color = WHITE
+        menu[index].color = YELLOW
         menuIndex = index
     }
     keyPress('up', ()=>{

@@ -1,6 +1,6 @@
 import k from './kaboom'
 
-const { color, vec2 } = k
+const { rgb, vec2 } = k
 
 export const GRID_PIXEL_SIZE = 32
 export const MAP_WIDTH = 15
@@ -13,16 +13,16 @@ export const HEAVY_GRAVITY = 1600
 
 export const DEFAULT_GAME_TIME = 180
 
-export const WHITE = color(1, 1, 1)
-export const DARKGRAY = color(0.25, 0.25, 0.25)
-export const LIGHTGRAY = color(0.5, 0.5, 0.5)
-export const BLACK = color(0, 0, 0)
-export const BLUE = color(0.39, 0.47, 0.937)
-export const GREEN = color(0.223, 0.517, 0)
-export const RED = color(1, 0, 0)
-export const YELLOW = color(1, 1, 0)
+export const WHITE = rgb(1, 1, 1)
+export const DARKGRAY = rgb(0.25, 0.25, 0.25)
+export const LIGHTGRAY = rgb(0.5, 0.5, 0.5)
+export const BLACK = rgb(0, 0, 0)
+export const BLUE = rgb(0.39, 0.47, 0.937)
+export const GREEN = rgb(0.223, 0.517, 0)
+export const RED = rgb(1, 0, 0)
+export const YELLOW = rgb(1, 1, 0)
 
-export const COLORS = {WHITE, BLUE, GREEN}
+export const COLORS = {WHITE, DARKGRAY, LIGHTGRAY, BLACK, BLUE, GREEN, RED, YELLOW}
 
 export const IDLE = vec2(0, 0)
 export const LEFT = vec2(-1, 0)
