@@ -54,7 +54,9 @@ function canBomb() {
             // Use player's area instead of sprite position to be a little more accurate
             // to what player expects. Also, we add a couple pixels vertically so the 
             // placement favors the feet over the head.
-            return this.spawnBombAtPos(this.pos.add(this.area.p1).add(vec2(0, 2)))
+            const success = this.spawnBombAtPos(this.pos.add(this.area.p1).add(vec2(0, 2)))
+            if (success) k.readd(this)
+            return success
         }
     }
 
