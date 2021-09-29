@@ -1,26 +1,20 @@
 import {k} from '../kaboom'
 import {LIGHTGRAY, DARKGRAY, RED, WHITE, YELLOW} from '../types'
 import {getMusVol} from '../util'
+import playerRect from '../features/playerRect'
 import textbox from '../features/textbox'
 
-export default function (nextScene = 'startCampaign') {
+export default function (playerCount = 1, nextScene = 'startCampaign') {
     const {
         add, charInput, color, destroy, go, keyPress, origin, play, pos, rect, rand, text, width, height
     } = k
     let menuIndex = 0
-    let playerCount = 1
-    const playersMenuItemLabel = () => `Number of Players: ${playerCount}`
     const addPlayerRect = () => add([
         rect(64, 64, {noArea: true}),
         pos(width()*0.5, height()*0.20),
         origin('center'),
         color(DARKGRAY),
-    ])
-    const addPlayerTitle = () => add([
-        text('', 9),
-        pos(width()*0.5, height()*0.2+48),
-        origin('center'),
-        color(LIGHTGRAY),
+        playerRect()
     ])
     // Title
     add([
@@ -36,20 +30,19 @@ export default function (nextScene = 'startCampaign') {
         pos(width()*0.5, height()*0.85),
     ])
     let music = play('menu-3', {loop: true, volume: getMusVol()})
-    const playerRects = [ addPlayerRect() ]
-    const playerTitles = [ addPlayerTitle() ]
+    const players = [ addPlayerRect() ]
+    const changePlayerCount = (cnt: number = 1) => {
+        if( cnt < 1 ) cnt = 4
+        if( cnt > 4 ) cnt = 1
+        while( players.length > cnt ) destroy(players.pop())
+        while( players.length < cnt ) players.push(addPlayerRect())
+        const deltaX = width() / (cnt+1)
+        players.forEach((r, idx)=>r.reposition(deltaX*(idx+1), r.pos.y))
+        menu[0].text = `Number of Players: ${players.length}`
+
+    }
     const actions = [
-        key => {
-            if( ++playerCount > 4 ) playerCount=1
-            while( playerRects.length > playerCount ) destroy(playerRects.pop())
-            while( playerRects.length < playerCount ) playerRects.push(addPlayerRect())
-            while( playerTitles.length > playerCount ) destroy(playerTitles.pop())
-            while( playerTitles.length < playerCount ) playerTitles.push(addPlayerTitle())
-            const deltaX = width() / (playerCount+1)
-            playerRects.forEach((r, idx)=>r.pos.x = deltaX*(idx+1))
-            playerTitles.forEach((t, idx)=>t.pos.x = deltaX*(idx+1))
-            menu[0].text = playersMenuItemLabel()
-        }, 
+        key => {}, 
         key => {
             if( roomName && key==='space' ) return
             if( roomName ) {
@@ -66,7 +59,7 @@ export default function (nextScene = 'startCampaign') {
         },
         key => {
             music.stop()
-            go(nextScene, playerCount)
+            go(nextScene, players.length)
         },
         key => {
             music.stop()
@@ -75,7 +68,7 @@ export default function (nextScene = 'startCampaign') {
     ]
     const menu = [
         add([
-            text(playersMenuItemLabel(), 14),
+            text("Number of Players", 14),
             color(WHITE),
             pos(width()*0.1, height()*0.4),
         ]),
@@ -117,6 +110,12 @@ export default function (nextScene = 'startCampaign') {
     keyPress('down', ()=>{
         changeMenuIndex(menuIndex===menu.length-1 ? menu.length-1 : menuIndex+1)
     })
+    keyPress('left', ()=>{
+        if( menuIndex===0 ) changePlayerCount(players.length-1)
+    })
+    keyPress('right', ()=>{
+        if( menuIndex===0 ) changePlayerCount(players.length+1)
+    })
     const mainAction = (key) => {
         actions[menuIndex](key)
     }
@@ -132,4 +131,5 @@ export default function (nextScene = 'startCampaign') {
     })
     // Init
     changeMenuIndex(menuIndex)
+    changePlayerCount()
 }
