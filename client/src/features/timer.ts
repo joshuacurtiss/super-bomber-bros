@@ -1,8 +1,5 @@
-import { GameObj } from 'kaboom'
 import { k, debug } from '../kaboom'
 import { POWERUPS } from '../types'
-
-const {time} = k
 
 const HURRY_TIME = 60
 
@@ -15,35 +12,30 @@ function formatTime(secs: number): string {
 
 export default function(maxTime: number) {
     let handleEnd=false
-    let handleInit=false
     let handleWarn=false
     let paused=true
-    let start=0
+    let time=0.0
     let last=''
-    const getTime = () => {
-        const t = start + maxTime - time()
-        return t>0 ? t : 0
-    }
-    const isHurry = (t=getTime()) => t<=HURRY_TIME
-    const isTimeUp = (t=getTime()) => t===0
+    const isHurry = () => maxTime-time<=HURRY_TIME
+    const isTimeUp = () => time>=maxTime
+    const getTime = () => time
+    const isStarted = () => time>0
+    const isPaused = () => paused
+    const pause = () => paused=true
+    const unpause = () => paused=false
     return {
         isHurry,
         isTimeUp,
+        isStarted,
+        isPaused,
         getTime,
-        pause() {
-            paused=true
-        },
-        unpause() {
-            paused=false
-        },
+        pause,
+        unpause,
         start() {
-            if( !start ) {
-                paused=false
-                start=time()
+            if( ! isStarted() ) {
+                unpause()
+                time=0.01
             }
-        },
-        started() {
-            return start>0
         },
         powerup(index: number) {
             if( index===POWERUPS.TIME ) {
@@ -51,7 +43,7 @@ export default function(maxTime: number) {
                 debug('Sweet, you just increased game time by 30 sec!')
             }
         },
-        writeTime(secs: number) {
+        writeTime(secs: number = maxTime) {
             const str = formatTime(secs)
             if( last!== str ) {
                 this.text = str
@@ -59,19 +51,17 @@ export default function(maxTime: number) {
             }
         },
         update() {
-            if( start && !paused ) {
-                const t = getTime()
-                this.writeTime(t)
-                if( isHurry(t) && !handleWarn ) {
+            if( isPaused() ) return
+            if( isStarted() ) {
+                time += k.dt()
+                this.writeTime(maxTime-time)
+                if( isHurry() && !handleWarn ) {
                     handleWarn=true
                     this.trigger("hurry_up")
-                } else if( isTimeUp(t) && !handleEnd ) {
+                } else if( isTimeUp() && !handleEnd ) {
                     handleEnd=true
                     this.trigger("time_up")
                 }
-            } else if( !handleInit ) {
-                handleInit=true
-                this.writeTime(maxTime)
             }
         }
     }

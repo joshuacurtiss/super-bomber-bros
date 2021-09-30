@@ -198,7 +198,7 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     })
 
     const startGame = () => {
-        if( !timer.started() ) {
+        if( !timer.isStarted() ) {
             timer.start()
             music = play('music-intro', {
                 volume: getMusVol(),
@@ -303,6 +303,7 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     k.debug.clearLog()
 
     // Start
+    timer.writeTime()
     updateHeaderScores()
     startGame()
 }
