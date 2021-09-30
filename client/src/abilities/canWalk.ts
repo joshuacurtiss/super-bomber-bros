@@ -23,6 +23,7 @@ function canWalk(speed: number = WALK_SPEED) {
             network.send(CMDS.PLAYER_STOP)
         },
         walk(direction: Vec2) {
+            if( this.paused ) return
             if( this.isDead() ) return
             walking=true
             dir=direction

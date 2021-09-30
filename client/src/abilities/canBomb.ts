@@ -111,6 +111,7 @@ function canBomb() {
     let timer = 3
     return {
         update() {
+            if( this.paused ) return
             timer-=dt()
             if( timer<0 ) {
                 // Bomb should explode when timer passes zero
@@ -269,6 +270,8 @@ function canBomb() {
  * If a bomb/brick/block already exists at the location, it will not spawn.
  */
 function spawnBombAtPos(position: Vec2): boolean {
+    // Do not spawn if paused
+    if( this.paused ) return false
     // Do not spawn if you have no more left
     if( ! this.canSpawnBomb() ) return false
     // Snap position to grid. 
