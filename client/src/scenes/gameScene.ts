@@ -299,6 +299,19 @@ export default async function (playerCount=1, mapId=1, mp=false) {
         }
     })
 
+    k.keyPress('escape', ()=>{
+        play('pause', {volume: getSfxVol()})
+        if( timer.isPaused() ) {
+            timer.unpause()
+            k.get().forEach(obj=>obj.paused=false)
+            music.play()
+        } else {
+            timer.pause()
+            k.get().forEach(obj=>obj.paused=true)
+            music.pause()
+        }
+    })
+
     // Debugging
     k.debug.clearLog()
 
