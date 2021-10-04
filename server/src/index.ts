@@ -1,27 +1,35 @@
-import * as http from 'http';
-import * as WebSocket from 'ws';
-import { AddressInfo } from 'net';
-import express from 'express';
-import path from 'path';
+import { Server, LobbyRoom, RelayRoom } from 'colyseus'
+import { WebSocketTransport } from '@colyseus/ws-transport'
+import { monitor } from '@colyseus/monitor'
+import { createServer } from 'http'
+import express from 'express'
+import path from 'path'
 
-const port = Number(process.env.PORT || 8000) + Number(process.env.NODE_APP_INSTANCE || 0);
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const port = Number(process.env.port || 8000)
+const app = express()
+app.use(express.json())
+app.use('/', express.static(path.join(__dirname, '..', '..', 'dist')))
+app.use('/colyseus', monitor());
 
-app.use(express.json());
-app.use('/', express.static(path.join(__dirname, '..', '..', 'dist')));
-
-wss.on('connection', (ws: WebSocket) => {
-    ws.on('message', function message(msg: string) {
-        wss.clients.forEach(function each(client) {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(msg, {binary: false});
-            }
-        });
-    });
+const gameServer = new Server({
+    transport: new WebSocketTransport({
+        server: createServer(app),
+        pingInterval: 5000,
+        pingMaxRetries: 3,
+        perMessageDeflate: false,
+    })
 })
 
-server.listen(port), ()=>{
-    console.log(`Listening on port ${(server.address() as AddressInfo).port}`);
-};
+// Define "lobby" room
+gameServer.define("lobby", LobbyRoom);
+
+// Define "relay" room
+gameServer.define("relay", RelayRoom, { maxClients: 8 })
+    .enableRealtimeListing();
+
+gameServer.onShutdown(function(){
+    console.log(`Game server is going down.`);
+});
+
+gameServer.listen(port)
+console.log(`Listening on port ${port}.`);
