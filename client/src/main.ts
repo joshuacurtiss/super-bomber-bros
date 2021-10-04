@@ -61,6 +61,8 @@ loadSprite('powerups', 'assets/map/powerups.png', {gridWidth: 16, gridHeight: 16
 scene('pref', scenes.prefScene)
 scene('start', scenes.startScene)
 scene('gameSetup', scenes.gameSetupScene)
+scene('joinStart', scenes.joinStartScene)
+scene('joinWait', scenes.joinWaitScene)
 scene('playerSelection', scenes.playerSelectionScene)
 scene('startBattle', scenes.startBattleScene)
 scene('startCampaign', scenes.startCampaignScene)

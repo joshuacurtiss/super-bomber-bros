@@ -1,4 +1,6 @@
-import k from '../kaboom'
+import { Room } from 'colyseus.js'
+import { k, network } from '../kaboom'
+import { CMDS } from '../model/Network'
 import {WHITE} from '../types'
 import {getMusVol} from '../util'
 
@@ -19,16 +21,37 @@ export default function (playerCount: number=1, level: number=1) {
         origin('center'),
         pos(width()*0.5, height()*0.4 )
     ])
-    add([
-        text("Press spacebar to begin", 9),
-        color(WHITE),
-        origin('center'),
-        pos(width()*0.5, height()*0.6)
-    ])
     const mainAction = () => {
         music.stop()
-        go('game', playerCount, level, false)
+        network.removeAllListeners()
+        network.send(CMDS.SCENE, 'game')
+        go('game')
     }
-    keyPress('space', mainAction)
-    keyPress('enter', mainAction)
+    const roomActions = (room: Room) => {
+        room.onLeave(async ()=>{
+            if( !await network.reconnect(roomActions) && network.enabled ) {
+                music.stop()
+                network.removeAllListeners()
+                go('disconnected')
+            }
+        })
+        room.onMessage(CMDS.SCENE, ([_, scene]) => {
+            music.stop()
+            network.removeAllListeners()
+            go(scene)
+        })
+    }
+    if( network.enabled===false || network.owner ) {
+        add([
+            text("Press spacebar to begin", 9),
+            color(WHITE),
+            origin('center'),
+            pos(width()*0.5, height()*0.6)
+        ])
+        keyPress('space', mainAction)
+        keyPress('enter', mainAction)
+    }
+    if( network.enabled ) {
+        roomActions(network.room)
+    }
 }

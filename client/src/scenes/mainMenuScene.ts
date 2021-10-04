@@ -2,6 +2,13 @@ import createTitle from './createTitle'
 import {k} from '../kaboom'
 import {WHITE, YELLOW} from '../types'
 import {getMusVol} from '../util'
+import {GAMETYPES} from '../../../shared/types'
+
+function menuAction(func: Function) {
+    return {
+        menuAction: func
+    }
+}
 
 export default function (menuIndex=0) {
     const {
@@ -15,18 +22,28 @@ export default function (menuIndex=0) {
             color(WHITE),
             origin('center'),
             pos(width()*0.5, height()*0.55 ),
+            menuAction(()=>go('gameSetup', GAMETYPES.CAMPAIGN)),
         ]),
         add([
             text("Play Battle Round", 14),
             color(WHITE),
             origin('center'),
             pos(width()*0.5, height()*0.65 ),
+            menuAction(()=>go('gameSetup', GAMETYPES.BATTLE)),
+        ]),
+        add([
+            text("Join an Online Game", 14),
+            color(WHITE),
+            origin('center'),
+            pos(width()*0.5, height()*0.75 ),
+            menuAction(()=>go('joinStart')),
         ]),
         add([
             text("Preferences", 14),
             color(WHITE),
             origin('center'),
-            pos(width()*0.5, height()*0.75 ),
+            pos(width()*0.5, height()*0.85 ),
+            menuAction(()=>go('pref')),
         ]),
     ]
     const mushrooms = [
@@ -48,10 +65,9 @@ export default function (menuIndex=0) {
         changeMenuIndex(menuIndex===menu.length-1 ? menu.length-1 : menuIndex+1)
     })
     const mainAction = () => {
+        if( !menu[menuIndex].menuAction ) return
+        menu[menuIndex].menuAction()
         music.stop()
-        if( menuIndex===0 ) go('gameSetup', 'startCampaign')
-        if( menuIndex===1 ) go('gameSetup', 'startBattle')
-        if( menuIndex===2 ) go('pref')
     }
     keyPress('space', mainAction)
     keyPress('enter', mainAction)

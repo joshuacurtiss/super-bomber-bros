@@ -1,18 +1,23 @@
-import {k} from '../kaboom'
-import {DARKGRAY, WHITE, YELLOW} from '../types'
 import {getMusVol} from '../util'
+import {k, network} from '../kaboom'
+import {CMDS} from '../model/Network'
+import {ISelectRow} from '../features/select'
+import {DARKGRAY, RED, WHITE, YELLOW} from '../types'
+import {GAMETYPES} from '../../../shared/types'
+import {Room} from 'colyseus.js'
+import autoHideText from '../features/autoHideText'
 import select from '../features/select'
 import textbox from '../features/textbox'
 
-function menuAction(func) {
+function menuAction(func: Function) {
     return {
         menuAction: func
     }
 }
 
-export default function (goalScene = 'startCampaign') {
+export default function (gameType = GAMETYPES.CAMPAIGN) {
     const {
-        add, charInput, color, destroy, go, keyPress, origin, play, pos, rect, rand, sprite, text, width, height
+        add, color, destroy, go, keyPress, origin, play, pos, rect, rand, sprite, text, width, height
     } = k
     // Data
     let playerCount = 0
@@ -34,12 +39,40 @@ export default function (goalScene = 'startCampaign') {
     const mainAction = () => menu[menuIndex].menuAction ? menu[menuIndex].menuAction() : 0
     const changePlayerCount = (cnt: number = playerCount+1) => {
         if( cnt < 1 ) cnt = 4
-        if( cnt > 4 ) cnt = 1
+        if( cnt > 4 ) cnt = roomName ? 2 : 1
         playerCount = cnt
         menu[0].text = `Number of Players: ${playerCount}`
     }
-    const menuOnlineAction = () => {
+    const roomActions = (room: Room) => {
+        room.onMessage(CMDS.ROOM_ENTER, ([sessionId, message])=>{
+            console.log("Player enter:", sessionId, message)
+            const data = roomPlayers.getData()
+            data.push({label: message.name, value: sessionId})
+            roomPlayers.setData(data)
+        })
+        room.onMessage(CMDS.ROOM_EXIT, ([sessionId, message])=>{
+            console.log("Player exit:", sessionId, message)
+            const data = roomPlayers.getData() as ISelectRow[]
+            const idx = data.findIndex(item=>item.value===sessionId)
+            if( idx<0 ) return
+            data.splice(idx, 1)
+            roomPlayers.setData(data)
+        })
+        room.onMessage('*', (type, message)=>{
+            console.log(`Generic Message: ${type} - ${message}`)
+        })
+        room.onLeave(async () => {
+            if( ! await network.reconnect(roomActions) && network.enabled ) {
+                changeMenuIndex(1)
+                menuOnlineAction()
+                err.setText('Disconnected from game server!')
+            }
+        })
+    }
+    const menuOnlineAction = async () => {
         if( roomName ) {
+            network.leave()
+            network.enabled=false
             destroy(roomName)
             destroy(roomPlayers)
             destroy(menuRoomName)
@@ -49,11 +82,19 @@ export default function (goalScene = 'startCampaign') {
             menuBack.pos.y = height() * 0.525
             menu.splice(3, 2)
         } else {
+            if( playerCount===1 ) changePlayerCount(2)
             menuRoomName = add([
                 text("Room:", 14),
                 origin('left'),
                 pos(width()/2-175, height()*0.6 - 30),
-                menuAction(()=>roomName.isFocused() ? roomName.blur() : roomName.focus()),
+                menuAction(()=>{
+                    if( roomName.isFocused() ) {
+                        roomName.blur()
+                        network.send(CMDS.ROOM_STATE_UPDATE, {roomName: roomName.getText()})
+                    } else {
+                        roomName.focus()
+                    }
+                }),
             ])
             roomName = add([
                 rect(270, 24, {noArea: false}),
@@ -78,13 +119,51 @@ export default function (goalScene = 'startCampaign') {
             menuBack.pos.y = height() - 40
             menu.pop()
             menu.push(menuRoomName, roomPlayers, menuBack)
+            network.enabled = true
+            network.connect()
+            if( ! await network.create(roomName.getText(), roomActions) && network.enabled ) {
+                changeMenuIndex(1)
+                menuOnlineAction()
+                err.setText('Could not connect to game server.')
+            }
+            network.send(CMDS.ROOM_STATE_UPDATE, {
+                type: gameType,
+                locked: false
+            })
         }
     }
     const menuContinueAction = () => {
+        const nextScene = 'playerSelection'
+        if( network.enabled ) {
+            // Validation checks:
+            if( roomPlayers.getSelected().length===0) {
+                err.setText('Select at least one online player.')
+                return
+            }
+            if( roomPlayers.getSelected().length>=playerCount ) {
+                err.setText('You selected too many online players.')
+                return
+            }
+            // Ok to proceed. Update room state.
+            network.send(CMDS.ROOM_STATE_UPDATE, {
+                playerCount,
+                type: gameType,
+                roomName: roomName.getText(),
+                locked: true
+            });
+            // Bunt the players that weren't selected, push forward the players that were selected
+            (roomPlayers.getData() as ISelectRow[]).forEach(row=>{
+                if( row.selected ) network.sendToClient(CMDS.SCENE, row.value, {scene: nextScene, args: [playerCount]})
+                else network.sendToClient(CMDS.ROOM_BUNT, row.value)
+            })
+            network.removeAllListeners()
+        }
         music.stop()
-        go(goalScene, playerCount)
+        go(nextScene, playerCount)
     }
     const menuBackAction = () => {
+        network.leave()
+        network.enabled=false
         music.stop()
         go('mainMenu')
     }
@@ -96,6 +175,13 @@ export default function (goalScene = 'startCampaign') {
         color(WHITE),
         origin('center'),
         pos(width()/2, height()*0.15)
+    ])
+    const err = add([
+        text("", 9),
+        color(RED),
+        origin('center'),
+        pos(width()/2, height()*0.225),
+        autoHideText(3),
     ])
     // Menu
     let menuIndex = 0
