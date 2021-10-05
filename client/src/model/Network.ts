@@ -27,6 +27,8 @@ export default class {
         if( !this.wsuri.length ) {
             const host = location.host.replace(/:.*/, '')
             this.wsuri = location.protocol.replace('http', 'ws') + '/' + '/' + host + (location.port ? ':'+location.port : '')
+            // TODO: Don't keep this in here forever
+            if( host==='www.curtiss.me' ) this.wsuri = 'wss://bomberbros.curtiss.me' + (location.port ? ':'+location.port : '')
         }
         return this
     }
