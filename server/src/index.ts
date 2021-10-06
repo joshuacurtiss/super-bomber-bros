@@ -1,4 +1,5 @@
-import { Server, LobbyRoom, RelayRoom } from 'colyseus'
+import { GameRoom } from './GameRoom'
+import { Server, LobbyRoom } from 'colyseus'
 import { WebSocketTransport } from '@colyseus/ws-transport'
 import { monitor } from '@colyseus/monitor'
 import { createServer } from 'http'
@@ -14,18 +15,14 @@ app.use('/colyseus', monitor());
 const gameServer = new Server({
     transport: new WebSocketTransport({
         server: createServer(app),
-        pingInterval: 5000,
-        pingMaxRetries: 3,
-        perMessageDeflate: false,
     })
 })
 
 // Define "lobby" room
 gameServer.define("lobby", LobbyRoom);
 
-// Define "relay" room
-gameServer.define("relay", RelayRoom, { maxClients: 8 })
-    .enableRealtimeListing();
+// Define "game" room
+gameServer.define("game", GameRoom, { maxClients: 8 }).enableRealtimeListing();
 
 gameServer.onShutdown(function(){
     console.log(`Game server is going down.`);
