@@ -6,7 +6,7 @@
   "author": "Josh Curtiss <josh@curtiss.me>",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf static/assets/**/*.ogg docs",
+    "clean": "rimraf static/assets/**/*.ogg static/assets/**/*.json static/assets/images/*.png docs",
     "pack": "ts-node pack",
     "server": "ts-node --project server/tsconfig.json server/src",
     "serverdev": "ts-node-dev --project server/tsconfig.json --watch server/src server/src",
@@ -32,6 +32,7 @@
     "@types/node": "^16.10.2",
     "colyseus.js": "^0.14.13",
     "fluent-ffmpeg": "^2.1.2",
+    "free-tex-packer-core": "^0.3.4",
     "parcel-bundler": "1.12.5",
     "parcel-plugin-clean-easy": "^1.0.2",
     "parcel-plugin-static-files-copy": "^2.6.0",

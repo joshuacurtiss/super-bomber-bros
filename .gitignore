@@ -5,3 +5,4 @@ docs
 node_modules
 static/assets/music/*
 static/assets/sfx/*
+static/assets/images/*
