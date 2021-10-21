@@ -31,11 +31,13 @@ import {
     MAP_HEIGHT_PIXELS,
     MUSIC_HURRY_DETUNE,
     MUSIC_HURRY_SPEED,
-    PLAYER_TYPES,
     BLUE,
     GREEN,
     WHITE,
 } from '../types'
+import {
+    CHARACTERS
+} from '../../../shared/types'
 
 const noArea = true
 
@@ -222,7 +224,7 @@ export default async function (playerCount=1, mapId=1, mp=false) {
     const players = Array.from(Array(playerCount).keys()).map(i=>{
         const playerNumString = (i+1).toString()
         const {x, y} = convertMapPosToCoord(findMapItem(map, playerNumString))
-        const chosenPlayer = choose(PLAYER_TYPES)
+        const chosenPlayer = choose(Object.values(CHARACTERS))
         const chosenPlayerComp = characters[chosenPlayer] || characters.generic
         return add([
             sprite(chosenPlayer),
