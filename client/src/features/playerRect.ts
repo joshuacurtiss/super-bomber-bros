@@ -92,6 +92,7 @@ export default function() {
                 pos(this.pos),
                 origin('center'),
             ])
+            this.updateUI()
         },
         destroy() {
             destroy(playerSprite)
