@@ -14,10 +14,11 @@ export default function (playerCount=1) {
     const {
         add, color, keyPress, origin, play, pos, rect, text, width, height
     } = k
+    const deltaX = width() / (playerCount+1)
     let menuIndex = 0
-    const addPlayerRect = () => add([
+    const addPlayerRect = (x: number, y: number) => add([
         rect(64, 64, {noArea: true}),
-        pos(width()*0.5, height()*0.20),
+        pos(x, y),
         origin('center'),
         color(DARKGRAY),
         playerRect()
@@ -37,7 +38,7 @@ export default function (playerCount=1) {
         autoHideText(3),
     ])
     let music = play('menu-3', {loop: true, volume: getMusVol()})
-    const players = Array(playerCount).fill(addPlayerRect());
+    const players = Array(playerCount).fill(null).map((_, idx)=>addPlayerRect(deltaX*(idx+1), height()*.20));
     console.log(players)
     const menu = [
         add([
