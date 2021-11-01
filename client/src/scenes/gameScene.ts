@@ -1,4 +1,5 @@
 import {k, debug, network} from '../kaboom'
+import {GAMETYPES} from '../../../shared/types'
 import canBomb from '../abilities/canBomb'
 import canControl from '../abilities/canControl'
 import canDie from '../abilities/canDie'
@@ -10,7 +11,8 @@ import bullet from '../hazards/Bullet'
 import fish from '../hazards/Fish'
 import brickFeature from '../features/brick'
 import timerFeature from '../features/timer'
-import maps from '../maps/campaign.json'
+import mapsBattle from '../maps/mp.json'
+import mapsCampaign from '../maps/campaign.json'
 
 import { keyboardDefaults } from '../abilities/canControl'
 import {
@@ -68,13 +70,11 @@ const {
     wait,
 } = k
 
-export default async function (playerCount=1, mapId=1, mp=false) {
+export default async function (gameType: string, playerCount: number, mapId: number) {
 
+    const maps=gameType===GAMETYPES.BATTLE ? mapsBattle : mapsCampaign
     const map=maps[mapId]
     let music
-
-    // Networking
-    network.enabled = mp
 
     // Music
     const musicPrefix = choose(['mb', 'mp'])

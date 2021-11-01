@@ -153,13 +153,13 @@ export default function (gameType = GAMETYPES.CAMPAIGN) {
             });
             // Bunt the players that weren't selected, push forward the players that were selected
             (roomPlayers.getData() as ISelectRow[]).forEach(row=>{
-                if( row.selected ) network.sendToClient(CMDS.SCENE, row.value, {scene: nextScene, args: [playerCount]})
+                if( row.selected ) network.sendToClient(CMDS.SCENE, row.value, {scene: nextScene, args: [gameType, playerCount]})
                 else network.sendToClient(CMDS.ROOM_BUNT, row.value)
             })
             network.removeAllListeners()
         }
         music.stop()
-        go(nextScene, playerCount)
+        go(nextScene, gameType, playerCount)
     }
     const menuBackAction = () => {
         network.leave()
