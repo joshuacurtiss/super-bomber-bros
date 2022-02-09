@@ -1,6 +1,8 @@
 import {k} from '../kaboom'
 import {DARKGRAY, RED, WHITE, YELLOW} from '../types'
+import {GAMETYPES} from '../../../shared/types'
 import {getMusVol} from '../util'
+import {keyboardDefaults} from '../abilities/canControl'
 import autoHideText from '../features/autoHideText'
 import playerRect from '../features/playerRect'
 
@@ -10,12 +12,12 @@ function menuAction(func: Function) {
     }
 }
 
-export default function (playerCount=1) {
+export default function (gameType: GAMETYPES, playerCount=1) {
     const {
-        add, color, keyPress, origin, play, pos, rect, text, width, height
+        add, color, go, keyPress, origin, play, pos, rect, text, width, height
     } = k
     const deltaX = width() / (playerCount+1)
-    let menuIndex = 0
+    let menuIndex = -1
     const addPlayerRect = (x: number, y: number) => add([
         rect(64, 64, {noArea: true}),
         pos(x, y),
@@ -45,25 +47,41 @@ export default function (playerCount=1) {
             text("Start game!", 14),
             color(WHITE),
             pos(width()*0.1, height()*0.55),
+            menuAction(()=>{
+                go('game', gameType, playerCount, 1)
+            })
         ]),
         add([
             text("Back to Main Menu", 14),
             color(WHITE),
             pos(width()*0.1, height()*0.625),
+            menuAction(()=>go('mainMenu'))
         ]),
     ]
+    const registerPlayer = (idx: number)=>{
+        console.log("register", idx)
+    }
     // Keypresses
     const changeMenuIndex = (index:number) => {
-        index = index < 0 ? 0 : index>menu.length-1 ? menu.length-1 : index
-        menu[menuIndex].color = WHITE
-        menu[index].color = YELLOW
+        index = index < -1 ? -1 : index>menu.length-1 ? menu.length-1 : index
+        if( menuIndex>=0 ) menu[menuIndex].color = WHITE
+        if( index>=0 ) menu[index].color = YELLOW
         menuIndex = index
     }
-    const mainAction = () => menu[menuIndex].menuAction ? menu[menuIndex].menuAction() : 0
+    const mainAction = () => {
+        if( menuIndex<0 || menuIndex>=menu.length ) return
+        menu[menuIndex].menuAction ? menu[menuIndex].menuAction() : 0
+    }
     keyPress('up', ()=>changeMenuIndex(menuIndex-1))
     keyPress('down', ()=>changeMenuIndex(menuIndex+1))
     keyPress('space', mainAction)
     keyPress('enter', mainAction)
+    keyboardDefaults.forEach((kdef, idx)=>{
+        keyPress(kdef.primary, ()=>registerPlayer(idx))
+    })
+    k.charInput(ch=>{
+        console.log(ch)
+    })
     // Init
     changeMenuIndex(menuIndex)
 }
